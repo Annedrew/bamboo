@@ -21,37 +21,59 @@ class SimulationScript:
         """
         self.metadata = []
 
-    def file_preprocessing(self, file_name, delimiter: str, column_name: str, expacted_order: list):
+    def file_preprocessing(self, file_name: str, delimiter: str, column_name: str, expected_order: list) -> pd.DataFrame:
         """
-        because human cannot put things always in the same order.
+        Preprocess a file and return a DataFrame with the desired order.
+
+        Parameters:
+            * file_name: The path to the file that needs to be processed.
+            * delimiter: The delimiter used in the file, for example: ','.
+            * column_name: The column name of unexpected order.
+            * expected_order: A list specifying the desired order of the rows in the DataFrame.
         """
         df = pd.read_csv(file_name, delimiter=delimiter)
-        df_sorted = df.set_index(column_name).reindex(expacted_order).reset_index()
+        df_sorted = df.set_index(column_name).reindex(expected_order).reset_index()
 
         return df_sorted
 
     def get_index(self, activities: list, activity_name: str) -> int:
         """
         Get corresponding index for an activity.
+
+        Parameters:
+            * activities: The list of all activities.
+            * activity_name: The name of the activity to be queried.
         """
         index = activities.index(activity_name)
         return index
     
     def form_tech_matrix(self, raw_tech: pd.DataFrame):
+        """
+        Convert the raw data to brightway data matrix.
+
+        Parameters:
+            * raw_tech: Raw data in pandas dataframe format.
+        """
         identity_matrix = np.identity(len(raw_tech))
         tech_matrix = - (identity_matrix - raw_tech)
         np.fill_diagonal(tech_matrix, -tech_matrix.diagonal())
 
         return tech_matrix
 
-    def extend_matrix(self, original_matrix, extend_data: pd.DataFrame, names: list, is_technosphere=True):
+    def extend_matrix(self, original_matrix: np.ndarray, extend_data: pd.DataFrame, names: list, is_technosphere=True):
         """
         Concatenage additional column and line to the matrix.
-        * names: this is the list of activities or emissions.
+        
+        Parameters:
+            * original_matrix: The pure EXIOBASE matrix, after convert to brightway matrix format.
+            * extend_data: The user's input data in dataframe format.
+            * names: The list of activities or emissions that user needs to assign values.
+            * is_technosphere: The default is to extend technosphere matrix. If it is False, then it extend biosphere matrix.
         """
         if is_technosphere:
             row = np.zeros([original_matrix.shape[1]]).reshape(1, -1)
             column = np.zeros([original_matrix.shape[0]])
+            # TODO: match activities by index and then assign the amount.
             for act, data in zip(extend_data.iloc[:, 0], extend_data.iloc[:, 1]):
                 column[self.get_index(names, act)] = data
             column = np.nan_to_num(column, nan=0)
@@ -60,13 +82,20 @@ class SimulationScript:
             extended_matrix = np.concatenate((column, np.concatenate((row, original_matrix), axis=0)), axis=1)
         else:
             column = np.zeros([original_matrix.shape[0]]).reshape(1, -1).T
+            # TODO: assign values to biosphere emissions from user's input.
             extended_matrix = np.concatenate((column, original_matrix), axis=1)
+
+        # TODO: print size before and after extension.
 
         return extended_matrix
     
-    def form_bio_matrix(self, bio_df, emissions) -> np.ndarray:
+    def form_bio_matrix(self, bio_df: pd.DataFrame, emissions: list) -> np.ndarray:
         """
         Get biosphere matrix data.
+        
+        Parameters:
+            * bio_df: The whole EXIOBASE emissions in dataframe format.
+            * emissions: The list of emissions used for LCA calculation.
         """
         bio_matrix = bio_df.loc[emissions].to_numpy()
 
@@ -74,6 +103,13 @@ class SimulationScript:
     
     # ATTENTION: have to make sure the file has the same order as biosphere emissions.
     def form_cf_matrix(self, emission_file: str, method: tuple) -> pd.DataFrame:
+        """
+        Get characterization factor matrix data.
+
+        Parameters:
+            * emission_file: The path to the file that needs to be processed.
+            * method: The method used for LCA calculation.
+        """
         emission_code = pd.read_csv(emission_file, delimiter=",") 
         codes = emission_code.iloc[:, -1]
 
@@ -106,17 +142,25 @@ class SimulationScript:
             
         return cf_matrix
 
-    def get_country_sector(self, activity):
+    def get_country_sector(self, activity: str):
         """
         Separate the country and sector.
+        
+        Parameters:
+            * activity: The activity name that needs to be processed.
         """
         country, sector = activity.split("-", 1)
 
         return country, sector
 
-    def map_pedigree_uncertainty(self, country_file, sector_file, region_sector_file):
+    def map_pedigree_uncertainty(self, country_file: str, sector_file: str, region_sector_file: str):
         """
         Build dictionaries to mapping specific uncertainty.
+        
+        Parameters:
+            * country_file: The file that group country to region.
+            * sector_file: The file that group sector to aggregated sector.
+            * region_sector_file: The mapping from aggregated region and sector to GSD. 
         """
         country_dfs = pd.read_csv(country_file, delimiter=";")
         sector_dfs = pd.read_csv(sector_file, delimiter=";")
@@ -127,7 +171,7 @@ class SimulationScript:
 
         return country_region, sector_seccat, region_sector_dfs
 
-    def find_pedigree_uncertainty(self, activity, country_region, sector_seccat, region_sector_dfs):
+    def find_pedigree_uncertainty(self, activity: str, country_region: pd.DataFrame, sector_seccat: pd.DataFrame, region_sector_dfs: pd.DataFrame):
         """
         Search for uncertainty for specific activity or biosphere flow.
         """
@@ -143,14 +187,18 @@ class SimulationScript:
 
         return gsd
     
-    def calc_specific_uncertainty(self, data, uncertainty):
+    def calc_specific_uncertainty(self, data: float, uncertainty: float):
         loc = np.log(data)
         scale = np.log(uncertainty)
 
         return loc, scale
     
-    # TODO: design for pedigree and specific uncertainty
+    # TODO: design for pedigree and one column uncertainty
+    # TODO: False align with the one from csv file.
     def add_uncertainty(self, bw_data, bw_indices, bw_flip):
+        """
+        Add uncertainty to the needed matrix.
+        """
         bw_uncertainties = []
         if bw_flip is not None: # technosphere
             k = 0
@@ -202,7 +250,6 @@ class SimulationScript:
                 bw_uncertainties.append(parameters_a)
 
         return np.array(bw_uncertainties, dtype=bwp.UNCERTAINTY_DTYPE)
-
     
     def prepare_bw_matrix(self, tech_matrix, bio_matrix, cf_matrix, activities):
         """
@@ -238,6 +285,13 @@ class SimulationScript:
 
     # TODO: uncertainty is None currently
     def prepare_datapackage(self, datapackage_data: List[Tuple[Any, ...]], uncertainty=None):
+        """
+        Prepare datapackage for brightway LCA calculation.
+
+        Parameters:
+            * datapackage_data: A list of tuple includes all information to create a datapackage.
+            * uncertainty: The uncertainty for all matrices.
+        """
         tech_data, tech_indices, tech_flip = datapackage_data[0]
         bio_data, bio_indices = datapackage_data[1]
         cf_data, cf_indices = datapackage_data[2]
@@ -267,6 +321,13 @@ class SimulationScript:
         return dp
 
     def perform_simulation(self, index, datapackage):
+        """
+        Calculate LCA score in brightway.
+
+        Parameters:
+            * index: The index of functional unit.
+            * datapackage: The datapackage for brightway LCA calculation.
+        """
         lca = bc.LCA(
             demand={index: 1},
             data_objs=[datapackage],
@@ -276,9 +337,18 @@ class SimulationScript:
 
         return lca.score
 
-    def manual_lca(self, A, B, C, A_, index):
+    def manual_lca(self, A, B, C, index):
+        """
+        Calculate LCA score manually for comparison.
+
+        Parameters:
+            * A: Raw EXIOBASE matrix
+            * B: Biosphere matrix
+            * C: Characterization factor matrix
+            * index: The index of functional unit.
+        """
         f = np.zeros(len(A))
         f[index] = 1
-        lca_score = np.sum(C.dot(B.dot((np.linalg.inv(A_)).dot(f))))
+        lca_score = np.sum(C.dot(B.dot((np.linalg.inv(np.identity(len(A))-A)).dot(f))))
 
         return lca_score
