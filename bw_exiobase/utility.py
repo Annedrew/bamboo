@@ -89,6 +89,28 @@ class SimulationScript:
 
         return extended_matrix
     
+    def add_multifunctionality_flip(self, extend_data, flip_column, dp_flip, dp_indices):
+        """
+        Add flip sign for multifunctionality foreground system.
+        """
+        for flip, indices in zip(dp_flip, dp_indices):
+            if indices[1] == 0:
+                if extend_data[[flip_column]][indices[0]] == True:
+                    dp_flip[indices[0]] = True
+
+        return dp_flip
+    
+    def add_multifunctionality_negative(self, extend_data, negative_column, dp_uncertainty, dp_indices):
+        """
+        Add uncertainty negative for multifunctionality foreground system.
+        """
+        for uncertainty, indices in zip(dp_uncertainty, dp_indices):
+            if indices[1] == 0:
+                if extend_data[[negative_column]][indices[0]] == True:
+                    dp_uncertainty[indices[0]][-1] = True
+
+        return dp_uncertainty
+
     def form_bio_matrix(self, bio_df: pd.DataFrame, emissions: list) -> np.ndarray:
         """
         Get biosphere matrix data.
