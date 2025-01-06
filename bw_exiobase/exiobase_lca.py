@@ -1,0 +1,79 @@
+import bw_processing as bwp
+import bw2calc as bc
+from scipy import sparse
+import pandas as pd
+import numpy as np
+from random import sample
+import os
+import matplotlib.pyplot as plt
+import seaborn as sb
+from matplotlib.ticker import FuncFormatter
+import textwrap
+import re
+import bw2data as bd
+from typing import List, Tuple, Any
+
+
+class ExiobaseLCA:
+    def perform_simulation(self, index, datapackage):
+        lca = bc.LCA(
+            demand={index: 1},
+            data_objs=[datapackage],
+        )
+        lca.lci()
+        lca.lcia()
+
+        return lca.score
+
+    def perform_static(self, index, datapackage, directory, k, t, myact):
+        """
+        Perform static simulation.
+        """
+        lca = bc.LCA(
+            demand={index: 1},
+            data_objs=[datapackage],
+        )
+        lca.lci()
+        lca.lcia()
+
+        print(f"Brightway calculated lca score: {lca.score, myact}")
+        os.makedirs(directory, exist_ok=True)
+        filename = os.path.join(directory, f"CASE_{k}_{t}_MC_simulations_{myact}.csv")
+
+        with open(filename, "w") as file:
+            file.write("kg CO2eq\n") # Write the header
+            file.write(f"{lca.score}")
+            print(f"Static LCA result saved to {filename}.")
+
+    def perform_stochastic(self, index, datapackage, directory, k, t, myact, batch_size=50, num_batches=10):
+        """
+        Perform Monte Carlo simulation and save the lca score.
+        """
+        lca = bc.LCA(
+            demand={index: 1},
+            data_objs=[datapackage],
+            use_distributions=True,
+        )
+        lca.lci()
+        lca.lcia()
+
+        print(f"Brightway calculated lca score(with uncertainty): {lca.score, myact}")
+        os.makedirs(directory, exist_ok=True)
+        filename = os.path.join(directory, f"CASE_{k}_{t}_MC_simulations_{myact}.csv")
+
+        with open(filename, "w") as file:
+            file.write("kg CO2eq\n")
+            for p in range(num_batches):
+                batch_results = [lca.score for _ in zip(range(batch_size), lca)]
+                df_batch = pd.DataFrame(batch_results, columns=["kg CO2eq"])
+                df_batch.to_csv(file, header=False, index=False)
+                print(f"Batch {p} saved to {filename}.")
+
+        print(f"Results saved to {filename}.")
+
+    def manual_lca(self, A, B, C, index):
+        f = np.zeros(len(A))
+        f[index] = 1
+        lca_score = np.sum(C.dot(B.dot((np.linalg.inv(A)).dot(f))))
+
+        return lca_score
