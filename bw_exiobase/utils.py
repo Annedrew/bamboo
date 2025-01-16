@@ -1,9 +1,23 @@
 import pandas as pd
 
-def get_activities(a_file_path: str, delimiter: str) -> list:
+
+def get_fg_activities(fg_file_path: str, delimiter: str) -> list:
     """
-    Get all activities by combing <country_name> and <sector_name>. 
-    
+    Get all activities of foreground system.
+
+    Parameters:
+        * fg_file_path: The path to the file that needs to be processed.
+        * delimiter: The separator of the file.
+    """
+    df = pd.read_csv(fg_file_path, decimal=delimiter)
+    fg_activities = df["Activity name"].unique().tolist()
+
+    return fg_activities
+
+def get_bg_activities(a_file_path: str, delimiter: str) -> list:
+    """
+    Get all activities of EXIOBASE by combing <country_name> and <sector_name>.
+
     Parameters:
         * a_file_path: The path to the file that needs to be processed.
         * delimiter: The separator of the file.
