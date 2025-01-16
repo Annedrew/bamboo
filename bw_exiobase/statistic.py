@@ -1,17 +1,10 @@
-import bw_processing as bwp
-import bw2calc as bc
-from scipy import sparse
 import pandas as pd
-import numpy as np
-from random import sample
 import os
 import matplotlib.pyplot as plt
 import seaborn as sb
 from matplotlib.ticker import FuncFormatter
 import textwrap
 import re
-import bw2data as bd
-from typing import List, Tuple, Any
 
 
 class Statistic:

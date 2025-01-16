@@ -1,33 +1,21 @@
-import bw_processing as bwp
 import bw2calc as bc
-from scipy import sparse
 import pandas as pd
 import numpy as np
-from random import sample
 import os
-import matplotlib.pyplot as plt
-import seaborn as sb
-from matplotlib.ticker import FuncFormatter
-import textwrap
-import re
-import bw2data as bd
-from typing import List, Tuple, Any
 
 
 class ExiobaseLCA:
-    def perform_simulation(self, index, datapackage):
-        lca = bc.LCA(
-            demand={index: 1},
-            data_objs=[datapackage],
-        )
-        lca.lci()
-        lca.lcia()
-
-        return lca.score
-
     def perform_static(self, index, datapackage, directory, k, t, myact):
         """
-        Perform static simulation.
+        Perform static simulation and save the lca score.
+
+        Parameters:
+            * index: The index of the functional unit.
+            * datapackage: The datapackage used for simulation.
+            * directory: The directory to save output file.
+            * k: The case identifier.
+            * t: The type of the simulation, such as "static", "uniform_0.2".
+            * myact: 
         """
         lca = bc.LCA(
             demand={index: 1},
@@ -71,7 +59,10 @@ class ExiobaseLCA:
 
         print(f"Results saved to {filename}.")
 
-    def manual_lca(self, A, B, C, index):
+    def manual_lca(self, A, B, C, index): 
+        """
+        Perform Monte Carlo simulation without brightway.
+        """
         f = np.zeros(len(A))
         f[index] = 1
         lca_score = np.sum(C.dot(B.dot((np.linalg.inv(A)).dot(f))))

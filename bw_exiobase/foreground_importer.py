@@ -1,17 +1,5 @@
-import bw_processing as bwp
-import bw2calc as bc
-from scipy import sparse
 import pandas as pd
 import numpy as np
-from random import sample
-import os
-import matplotlib.pyplot as plt
-import seaborn as sb
-from matplotlib.ticker import FuncFormatter
-import textwrap
-import re
-import bw2data as bd
-from typing import List, Tuple, Any
 
 
 class ForegroundImporter:
@@ -19,9 +7,12 @@ class ForegroundImporter:
     def extend_matrix(self, original_matrix, extend_data: pd.DataFrame, names: list, is_technosphere=True):
         """
         Concatenage additional column and line to the matrix.
-        * names: 
-            - For technosphere, this is the list of activities which include all activities for the whole foreground system.
-            - For biosphere, this is the list of emissions.
+        
+        Parameters:
+            * original_matrix: The pure EXIOBASE matrix, after convert to brightway matrix format.
+            * extend_data: The user's input data in dataframe format.
+            * names: The list of activities or emissions that user needs to assign values.
+            * is_technosphere: The default is to extend technosphere matrix. If it is False, then it extend biosphere matrix.
         """
         if is_technosphere:
             row = np.zeros([original_matrix.shape[1]]).reshape(1, -1)  # this has the same amont of activities as exiobase

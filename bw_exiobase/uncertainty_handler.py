@@ -1,17 +1,6 @@
 import bw_processing as bwp
-import bw2calc as bc
-from scipy import sparse
 import pandas as pd
 import numpy as np
-from random import sample
-import os
-import matplotlib.pyplot as plt
-import seaborn as sb
-from matplotlib.ticker import FuncFormatter
-import textwrap
-import re
-import bw2data as bd
-from typing import List, Tuple, Any
 
 
 class UncertaintyHandler:
@@ -27,6 +16,9 @@ class UncertaintyHandler:
     def get_country_sector(self, activity):
         """
         Separate the country and sector.
+        
+        Parameters:
+            * activity: The activity name that needs to be processed.
         """
         country, sector = activity.split("-", 1)
 
@@ -35,6 +27,11 @@ class UncertaintyHandler:
     def map_pedigree_uncertainty(self, country_file, sector_file, region_sector_file):
         """
         Build dictionaries to mapping specific uncertainty.
+        
+        Parameters:
+            * country_file: The file that group country to region.
+            * sector_file: The file that group sector to aggregated sector.
+            * region_sector_file: The mapping from aggregated region and sector to GSD. 
         """
         country_dfs = pd.read_csv(country_file, delimiter=";")
         sector_dfs = pd.read_csv(sector_file, delimiter=";")

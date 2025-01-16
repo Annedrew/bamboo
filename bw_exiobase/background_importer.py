@@ -1,40 +1,52 @@
-import bw_processing as bwp
-import bw2calc as bc
-from scipy import sparse
 import pandas as pd
 import numpy as np
-from random import sample
-import os
-import matplotlib.pyplot as plt
-import seaborn as sb
-from matplotlib.ticker import FuncFormatter
-import textwrap
-import re
 import bw2data as bd
-from typing import List, Tuple, Any
+from .utils import *
 
 
-class DatabaseImporter:
-    def form_tech_matrix(self, raw_tech: pd.DataFrame):
+class BackgroundImporter:
+    def form_tech_matrix(self, raw_tech: np.ndarray):
+        """
+        Get technosphere matrix data:
+            Calculate (I-A), then convert it into a totally positive matrix.
+
+        Parameters:
+            * raw_tech: Raw data in pandas dataframe format.
+        """
         identity_matrix = np.identity(len(raw_tech))
         tech_matrix = - (identity_matrix - raw_tech)
         np.fill_diagonal(tech_matrix, -tech_matrix.diagonal())
+        
+        if (tech_matrix < 0).any().any():
+            raise ValueError("Transformation failed, negative values remain.")
 
         return tech_matrix
 
     def form_bio_matrix(self, bio_df, emissions) -> np.ndarray:
         """
-        Get biosphere matrix data.
+        Get biosphere matrix data:
+            Extract the corresponding value by emission name.
+        
+        Parameters:
+            * bio_df: The whole EXIOBASE emissions in dataframe format.
+            * emissions: The list of emissions used for LCA calculation.
         """
         bio_matrix = bio_df.loc[emissions].to_numpy()
 
         return bio_matrix
 
-    # ATTENTION: have to make sure the file has the same order as biosphere emissions.
-    def form_cf_matrix(self, emission_file: str, method: tuple) -> pd.DataFrame:
-        emission_code = pd.read_csv(emission_file, delimiter=",") 
-        codes = emission_code.iloc[:, -1]
+    def form_cf_matrix(self, emission_file: str, method: tuple, emission_list: list) -> np.ndarray:
+        """
+        Get characterization factor matrix data.
 
+        Parameters:
+            * emission_file: The path to the file that needs to be processed. The file includes emission name and emission code column.
+            * method: The method used for LCA calculation.
+        """
+        emission_code = pd.read_csv(emission_file, delimiter=",")
+        emission_code = file_preprocessing(emission_file, ",", "exiobase name", emission_list)  # sorting the column order align with the desired order.
+
+        codes = emission_code.iloc[:, -1]
         bw_method = bd.Method(method)
         method_df = pd.DataFrame(bw_method.load(), columns=["database_code", "cf_number"])
         method_df[["database", "code"]] = method_df["database_code"].to_list()
@@ -54,12 +66,13 @@ class DatabaseImporter:
                 if "Carbon dioxide" in name:
                     cf_dict[code] = 1.0
                     fixed_codes.append(code)
-            if missing_codes != fixed_codes:
-                print(f"CF data imcomplete, missing: {missing_codes}")
-            else:
+            if missing_codes == fixed_codes:
                 for code in codes:
                     cf_matrix.append(cf_dict.get(code))
 
         cf_matrix = np.diagflat(cf_matrix)
+
+        if len(cf_matrix) != len(emission_code):
+            raise ValueError(f"Characterization factor data imcomplete, missing: {missing_codes}")
             
         return cf_matrix

@@ -1,16 +1,7 @@
 import bw_processing as bwp
-import bw2calc as bc
 from scipy import sparse
 import pandas as pd
 import numpy as np
-from random import sample
-import os
-import matplotlib.pyplot as plt
-import seaborn as sb
-from matplotlib.ticker import FuncFormatter
-import textwrap
-import re
-import bw2data as bd
 from typing import List, Tuple, Any
 
 
@@ -86,6 +77,13 @@ class DatapackageBuilder:
 
     # Is it common people add ucnertainty to cf matrix?
     def prepare_datapackage(self, datapackage_data: List[Tuple[Any, ...]], uncertainty=None):
+        """
+        Prepare datapackage for brightway LCA calculation.
+
+        Parameters:
+            * datapackage_data: A list of tuple includes all information to create a datapackage.
+            * uncertainty: The uncertainty for all matrices.
+        """
         tech_data, tech_indices, tech_flip = datapackage_data[0]
         bio_data, bio_indices = datapackage_data[1]
         cf_data, cf_indices = datapackage_data[2]

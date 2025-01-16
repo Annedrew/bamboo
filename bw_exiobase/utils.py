@@ -1,21 +1,12 @@
-import bw_processing as bwp
-import bw2calc as bc
-from scipy import sparse
 import pandas as pd
-import numpy as np
-from random import sample
-import os
-import matplotlib.pyplot as plt
-import seaborn as sb
-from matplotlib.ticker import FuncFormatter
-import textwrap
-import re
-import bw2data as bd
-from typing import List, Tuple, Any
 
-def get_activities(self, a_file_path: str, delimiter: str) -> list:
+def get_activities(a_file_path: str, delimiter: str) -> list:
     """
-    Get all activities by combing <country_name> and <sector_name>.
+    Get all activities by combing <country_name> and <sector_name>. 
+    
+    Parameters:
+        * a_file_path: The path to the file that needs to be processed.
+        * delimiter: The separator of the file.
     """
     df = pd.read_csv(a_file_path, delimiter=delimiter, header=None, low_memory=False)
     countries = df.iloc[3:, 0].unique().tolist()
@@ -24,9 +15,15 @@ def get_activities(self, a_file_path: str, delimiter: str) -> list:
 
     return activities
 
-def file_preprocessing(self, file_name, delimiter: str, column_name: str, expacted_order: list):
+def file_preprocessing(file_name, delimiter: str, column_name: str, expacted_order: list):
     """
     Preprocess a file and return a DataFrame with the desired order.
+
+    Parameters:
+        * file_name: The path to the file that needs to be processed.
+        * delimiter: The delimiter used in the file, for example: ','.
+        * column_name: The column name of unexpected order.
+        * expected_order: A list specifying the desired order of the rows in the DataFrame.
     """
     df = pd.read_csv(file_name, delimiter=delimiter)
     df_sorted = df.set_index(column_name).reindex(expacted_order).reset_index()
