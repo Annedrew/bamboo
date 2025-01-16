@@ -32,3 +32,50 @@ class ForegroundImporter:
             extended_matrix = np.concatenate((column, original_matrix), axis=1)
         
         return extended_matrix
+    
+    # for adding more columns in a long format
+    def extend_matrix(self, extend_data: pd.DataFrame, emissions: list, fg_activities: list, bg_activities: list):
+        """
+        Concatenage additional column and line to the matrix.
+        
+        Parameters:
+            * extend_data: The user's input data include technosphere and biosphere data in dataframe format.
+            * emissions: The list of emissions.
+            * fg_activities: The list of foreground activities.
+            * bg_activities: The list of background activities.
+        """
+        #INFO:  the names include the foreground activities
+
+        # 1. background's foreground
+        bgfg = np.zeros([len(fg_activities), len(bg_activities)])
+
+        # 2. foredround's foreground
+        fgfg = np.zeros([len(fg_activities), len(fg_activities)])
+
+        # 3. foreground's background
+        fgbg = np.zeros([len(bg_activities), len(fg_activities)])
+
+        # 4. foreground's biosphere
+        fgbi = np.zeros([len(emissions), len(fg_activities)])
+
+        for index, row in extend_data.iterrows():
+            # check which column the exchange is in
+            activity_name = row["Activity name"]
+            column_count = fg_activities.index(activity_name)
+
+            if row["Exchange type"] == "production":  # fgfg
+                np.fill_diagonal(fgfg, 1)
+            elif row["Exchange type"] == "technosphere": # fgbg
+                row_count = bg_activities.index(row["Exchange name"]) # I don't need to make the index the same as datapackage here, it will be handled this in the prepare datapackage process.
+                fgbg[row_count][column_count] = row["Amount"]
+            elif row["Exchange type"] == "biosphere": # fgbi
+                row_count = emissions.index(row["Exchnage name"])
+                fgbi[row_count][column_count] = row["Amount"]
+
+        return bgfg, fgfg, fgbg, fgbi
+
+    def concatenate_matrix(self, tech_matrix: pd.DataFrame, bio_matrix: pd.DataFrame, bgfg: np.ndarray, fgfg: np.ndarray, fgbg: np.ndarray, fgbi: np.ndarray):
+        tech_matrix = np.concatenate((np.concatenate((fgfg, fgbg), axis=0), np.concatenate((bgfg, tech_matrix), axis=0)), axis=1)
+        bio_matrix = np.concatenate((bio_matrix, tech_matrix), axis=1)
+
+        return tech_matrix, bio_matrix
