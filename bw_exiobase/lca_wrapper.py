@@ -1,10 +1,11 @@
+# TODO: EXAMPLES
 import bw2calc as bc
 import pandas as pd
 import numpy as np
 import os
 
 
-class ExiobaseLCA:
+class LCAWrapper:
     def perform_static(self, index, datapackage, directory, k, t, myact):
         """
         Perform static simulation and save the lca score.
@@ -18,7 +19,7 @@ class ExiobaseLCA:
             * myact: 
         """
         lca = bc.LCA(
-            demand={index: 1},
+            demand={index: 1}, # TODO: user defined
             data_objs=[datapackage],
         )
         lca.lci()
