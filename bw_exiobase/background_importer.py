@@ -35,7 +35,7 @@ class BackgroundImporter:
 
         return bio_matrix
 
-    def form_cf_matrix(self, emission_file: str, method: tuple, emission_list: list) -> np.ndarray:
+    def form_cf_matrix(self, emission_file: str, ecoinvent_name, method: tuple, emission_list: list) -> np.ndarray:
         """
         Get characterization factor matrix data.
 
@@ -43,22 +43,47 @@ class BackgroundImporter:
             * emission_file: The path to the file that needs to be processed. The file includes emission name and emission code column.
             * method: The method used for LCA calculation.
         """
+        # TODO: set project and database, how
+        # TODO: 2 situation has different order.
         emission_code = pd.read_csv(emission_file, delimiter=",")
-        emission_code = file_preprocessing(emission_file, ",", "exiobase name", emission_list)  # sorting the column order align with the desired order.
-
         codes = emission_code.iloc[:, -1]
         bw_method = bd.Method(method)
-        method_df = pd.DataFrame(bw_method.load(), columns=["database_code", "cf_number"])
-        method_df[["database", "code"]] = method_df["database_code"].to_list()
-        cf_selected = method_df[method_df["code"].isin(codes)][["code", "cf_number"]]
-        cf_dict = cf_selected.set_index("code")["cf_number"].to_dict()
-        missing_codes = list(set(codes.unique()) - set(cf_selected["code"]))
-        
-        cf_matrix = []
-        if not missing_codes:
+        method_data = bw_method.load()
+
+        if isinstance(method_data[0][0], list): # ecoinvent 3.9
+            method_df = pd.DataFrame(method_data, columns=["database_code", "cf_value"])
+            method_df[["database", "code"]] = method_df["database_code"].to_list()
+            cf_selected = method_df[method_df["code"].isin(codes)][["code", "cf_value"]]
+            cf_dict = cf_selected.set_index("code")["cf_value"].to_dict()
+            missing_codes = list(set(codes.unique()) - set(cf_selected["code"]))
+            # if missing_codes is not None:
+            #     print(f"Characterization factor data imcomplete, missing: {missing_codes}")
+            # else:
+            cf_matrix = np.diagflat(cf_selected["cf_value"].to_list())
+            print(cf_selected["code"].to_list())
+        elif isinstance(method_data[0][0], int): # ecoinvent 3.11
+            method_df = pd.DataFrame(method_data, columns=["id", "cf_value"])
+            emissions = {}
             for code in codes:
-                cf_matrix.append(cf_dict.get(code))
-        else:
+                emission = bd.Database(ecoinvent_name).get(code)
+                emissions[emission.id] = code
+            ids = list(emissions.keys())
+            cf_selected = method_df[method_df["id"].isin(ids)][["id", "cf_value"]]
+            cf_dict = cf_selected.set_index("id")["cf_value"].to_dict()
+            missing_ids = set(ids) - set(cf_selected["id"])
+            missing_codes = [emissions[key] for key in missing_ids if key in emissions]
+            # if missing_codes is not None:
+            #     print(f"Characterization factor data imcomplete, missing: {missing_codes}")
+            # else:
+            cf_matrix = np.diagflat(cf_selected["cf_value"].to_list())
+            print(cf_selected["id"].to_list())
+            print(emissions)
+                
+        return cf_matrix
+
+    def find_co2(self, emission_code, missing_codes, cf_dict, codes):
+        cf_matrix = []
+        if missing_codes: # try to find co2
             miss_dict = emission_code[["ecoinvent name", "brightway code"]].set_index("brightway code")["ecoinvent name"].to_dict()
             fixed_codes = []
             for code in missing_codes:
