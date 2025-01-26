@@ -1,62 +1,38 @@
 import bw_processing as bwp
 import pandas as pd
 import numpy as np
+from .utils import *
 
 
+# TODO: Modify the metadata data structure to the structure in the example.
 class UncertaintyHandler:
     def __init__(self):
         """
-        self.metadata: save technosphere data, including column index and gsd
+        self.metadata: save activity information, including: 
+                activity index(the index in the datapackage), 
+                uncertainty type, 
+                activity name, 
+                itemwise uncertainty value,
+                and columnwise uncertainty value. (Here the uncertainy value means the mu value.)
 
-        metadata:
-        [{index: (act, [specific1, specific2, specific3, ...]])}, {index: (act, gsd)}, {index: (act, gsd)}]
+        metadata = {
+            index1: {
+                "type": 1,
+                "act": act1,
+                "specific": [specific1, specific2, specific3, ...],
+                "gsd": 0,
+            },
+            index2: {
+                "type": 2,
+                "act": act2,
+                "specific": [],
+                "gsd": gsd2,
+            },
+            ...
+        }
         """
-        self.metadata = []
-        
-    def get_country_sector(self, activity):
-        """
-        Separate the country and sector.
-        
-        Parameters:
-            * activity: The activity name that needs to be processed.
-        """
-        country, sector = activity.split("-", 1)
-
-        return country, sector
-
-    def map_pedigree_uncertainty(self, country_file, sector_file, region_sector_file):
-        """
-        Build dictionaries to mapping specific uncertainty.
-        
-        Parameters:
-            * country_file: The file that group country to region.
-            * sector_file: The file that group sector to aggregated sector.
-            * region_sector_file: The mapping from aggregated region and sector to GSD. 
-        """
-        country_dfs = pd.read_csv(country_file, delimiter=";")
-        sector_dfs = pd.read_csv(sector_file, delimiter=";")
-        region_sector_dfs = pd.read_csv(region_sector_file, delimiter=";")
-
-        country_region = country_dfs.set_index(country_dfs.columns[0])[country_dfs.columns[1]].to_dict()
-        sector_seccat = sector_dfs.set_index(sector_dfs.columns[0])[sector_dfs.columns[1]].to_dict()
-
-        return country_region, sector_seccat, region_sector_dfs
-
-    def find_pedigree_uncertainty(self, activity, country_region, sector_seccat, region_sector_dfs):
-        """
-        Search for uncertainty for specific activity or biosphere flow.
-        """
-        country, sector = self.get_country_sector(activity)
-        region_category =  country_region.get(country, None)
-        sector_category = sector_seccat.get(sector, None)
-
-        if region_category !=  None and sector_category != None:
-            gsd = float(region_sector_dfs[(region_sector_dfs.iloc[:, 0] == region_category) & (region_sector_dfs.iloc[:, 1] == sector_category)]["GSD"].iloc[0])
-        else:
-            print("No GSD found.")
-            gsd = None
-
-        return gsd
+        uncertainty_type = ["Undefined", "No uncertainty", "Lognormal", "Normal", "Uniform"] # only handle until 4.
+        self.metadata = {}
 
     def calc_specific_uncertainty(self, data, uncertainty):
         loc = np.log(data)
@@ -64,62 +40,120 @@ class UncertaintyHandler:
 
         return loc, scale
 
-    # TODO: design for pedigree and specific uncertainty
-    def add_uncertainty(self, bw_data, bw_indices, bw_flip):
-        bw_uncertainties = []
-        if bw_flip is not None: # technosphere
-            k = 0
-            for data, indices, flip in zip(bw_data, bw_indices, bw_flip):
-                uncertainty = list(self.metadata[indices[1]].items())[0][1][1]
-                if uncertainty is not None:
-                    if indices[1] == 0:
-                        uncertainty = uncertainty[k]
-                        k += 1
-                        if uncertainty == 0 or data == 0:
-                            parameters_a = (0, data, np.NaN, np.NaN, np.NaN, np.NaN, False)
-                        else:
-                            loc = np.log(abs(data))
-                            scale = np.log(uncertainty)
-                            if not flip:
-                                parameters_a = (0, data, np.NaN, np.NaN, np.NaN, np.NaN, False)
-                            else:
-                                parameters_a = (2, loc, scale, np.NaN, np.NaN, np.NaN, False)
-                    else:
-                        if data == 0:
-                            parameters_a = (0, data, np.NaN, np.NaN, np.NaN, np.NaN, False)
-                        else:
-                            loc = np.log(abs(data))
-                            scale = np.log(uncertainty)
-                            if not flip:
-                                parameters_a = (0, data, np.NaN, np.NaN, np.NaN, np.NaN, False)
-                            else:
-                                parameters_a = (2, loc, scale, np.NaN, np.NaN, np.NaN, False)
-                else:
-                    parameters_a = (0, data, np.NaN, np.NaN, np.NaN, np.NaN, False)
-                bw_uncertainties.append(parameters_a)
-        else:
-            k = 0
-            for data, indices in zip(bw_data, bw_indices):
-                uncertainty = list(self.metadata[indices[1]].items())[0][1][1]
-                if uncertainty is not None:
-                    if indices[1] == 0:
-                        uncertainty = uncertainty[k]
-                        k += 1
-                        if uncertainty == 0 or data == 0:
-                            parameters_a = (0, data, np.NaN, np.NaN, np.NaN, np.NaN, False)
-                        else:
-                            loc = np.log(abs(data))
-                            scale = np.log(uncertainty)
-                            parameters_a = (2, loc, scale, np.NaN, np.NaN, np.NaN, False)
-                    else:
-                        if data == 0:
-                            parameters_a = (0, data, np.NaN, np.NaN, np.NaN, np.NaN, False)
-                        else:
-                            loc = np.log(abs(data))
-                            scale = np.log(uncertainty)
-                            parameters_a = (2, loc, scale, np.NaN, np.NaN, np.NaN, False)
-                else:
-                    parameters_a = (0, data, np.NaN, np.NaN, np.NaN, np.NaN, False)
-                bw_uncertainties.append(parameters_a)
+    def generate_uncertainty_tuple(self, data, type, gsd):
+        """
+        Generate the uncertainty tuple for one value.
 
-        return np.array(bw_uncertainties, dtype=bwp.UNCERTAINTY_DTYPE)
+        Parameters:
+            * data: The input or output value of the one exchange in the system.
+            * type: The type of uncertainty, such as 2.
+            * gsd: Geometric Standard Deviation, used to calculate sigma of lognormal distribution.
+        """
+        if type in [0, 1]:
+            uncertainty_tuple = (type, data, np.NaN, np.NaN, np.NaN, np.NaN, False)
+        elif type == "2":
+            uncertainty_tuple = (type, np.log(data), np.log(gsd), np.NaN, np.NaN, np.NaN, False)
+        elif type == 3: # normal
+            uncertainty_tuple = (type, data, np.NaN, np.NaN, np.NaN, np.NaN, False)
+        elif type == 4: # uniform
+            uncertainty_tuple = (type, np.NaN, np.NaN, np.NaN, (data - data * gsd), (data + data * gsd), False)
+
+        return uncertainty_tuple
+    
+    def get_uncertainty_value(self, strategy, act_index, row):
+        """
+        Get uncertainty values by strategy from metadata.
+
+        Parameters:
+            * strategy: The strategy of adding uncertainty, "itemwise" or "columnwise".
+            * act_index: The index of the activity.
+            * row: The row number of the corresponding activity.
+        """
+        if strategy == "itemwise":
+            uncertainty_value = self.metadata[act_index]["specific"][row]
+        elif strategy == "columnwise":
+            uncertainty_value = self.metadata[act_index]["gsd"]
+
+        return uncertainty_value
+
+    def add_uncertainty(self, bw_data, bw_indices, bw_flip, fg_num, fg_strategy, bg_strategy):
+        """
+        strategy: "itemwise" or "columnwise"
+        """
+        uncertainty_array = []
+        for i, data in enumerate(bw_data):
+            row, col = bw_indices[i]
+            act_index = col
+            if col > fg_num: # foreground situation
+                uncertainty_array.append(self.generate_uncertainty_tuple(data, self.metadata[act_index]["type"], self.get_uncertainty_value(fg_strategy, act_index, row)))
+            else: # backgroundground situation
+                specific_index = col
+                uncertainty_array.append(self.generate_uncertainty_tuple(data, self.metadata[act_index]["type"], self.get_uncertainty_value(bg_strategy, act_index, row)))
+                
+        return uncertainty_array
+    
+    def add_uniform_uncertainty(self, type, gsd, bw_data, bw_flip):
+        """
+        Generate the uncertainty tuple for one value.
+
+        Parameters:
+            * type: The type of uncertainty, such as "Uniform".
+            * gsd: Geometric Standard Deviation, used to calculate sigma of lognormal distribution.
+            * bw_data: All values for foreground system or background system.
+            * bw_flip: The flip array of technosphere.
+        """
+        uncertainty_array = np.zeros(len(bw_data), dtype=bwp.UNCERTAINTY_DTYPE)
+
+        if bw_flip is not None:
+            for i in range(len(bw_data)):
+                if bw_flip[i] == True:
+                    uncertainty_array[i] = self.generate_uncertainty_tuple(bw_data[i], type, gsd)
+                else:
+                    uncertainty_array[i] = (0, bw_data[i], np.NaN, np.NaN, np.NaN, np.NaN, False)
+        else:
+            for i in range(len(bw_data)):
+                uncertainty_array[i] = self.generate_uncertainty_tuple(bw_data[i], type, gsd)
+
+        return uncertainty_array
+
+    # TODO: Ignore the flip first, modify it after generate all uncertainty tuples.
+    def add_multifunctionality_flip(self, extend_data: pd.DataFrame, act_column: str, flip_column: str, dp_flip: np.ndarray, dp_indices: np.ndarray, activities: list) -> np.ndarray:
+        """
+        Add flip sign for multifunctionality foreground system. (It's used when user's input is all positive values and only the last column shows to flip or not.)
+        
+        Parameters:
+            * extend_data: user input file in dataframe format.
+            * flip_column: the column name of flip sign in user's input.
+            * dp_flip: the prepared flip numpy array for datapackage.
+            * dp_indices: the prepared indices numpy array for datapackage.
+        """
+        for flip, indices in zip(dp_flip, dp_indices):
+            if indices[1] == 0:
+                flip_sign = extend_data[extend_data[act_column] == activities[indices[0]]][flip_column]
+                if not flip_sign.empty:
+                    flip_sign = flip_sign.iloc[0]
+                    if flip_sign == False:
+                        dp_flip[indices[0]] = False
+                else:
+                    pass
+
+        return dp_flip
+    
+    def add_multifunctionality_negative(self, extend_data, act_column: str, negative_column: str, dp_uncertainty, dp_indices, activities: list):
+        """
+        Add uncertainty negative for multifunctionality foreground system.
+        """
+        for uncertainty, indices in zip(dp_uncertainty, dp_indices):
+            if indices[1] == 0:
+                if indices[0] >= len(activities):
+                    negative_sign = extend_data[extend_data[act_column] == activities[indices[0]-len(activities)]][negative_column] # minus technosphere row.
+                    pos = dp_indices.tolist().index((indices[0], indices[1]))
+                    if not negative_sign.empty:
+                        if negative_sign == True:
+                            dp_uncertainty[pos][-1] = True
+                        elif negative_sign == False:
+                            dp_uncertainty[pos][-1] = False
+                    else:
+                        pass
+
+        return dp_uncertainty
