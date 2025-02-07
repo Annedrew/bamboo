@@ -1,0 +1,37 @@
+Activity name,Exchange name,Exchange type,Exchange amount,Exchange uncertainty type,GSD,Exchange negative
+column_1,EU28-Electricity by biomass and waste,technosphere,-2.34E-07,2,2.674794737,TRUE
+column_1,EU28-Electricity by solar photovoltaic,technosphere,-2.01E-07,2,2.674794737,TRUE
+column_1,EU28-Electricity by solar thermal,technosphere,0,1,0,FALSE
+column_1,"EU28-Electricity by tide, wave, ocean",technosphere,-6.78E-09,2,2.674794737,TRUE
+column_1,EU28-Electricity by Geothermal,technosphere,-9.35E-10,2,2.674794737,TRUE
+column_1,EU28-Electricity nec,technosphere,,0,,
+column_1,EU28-Steam and hot water supply services,technosphere,7.55E-07,2,2.674794737,FALSE
+column_1,"EU28-Collected and purified water, distribution services of water (41)",technosphere,1.8E-07,2,2.288684673,FALSE
+column_1,EU28-Services,technosphere,,0,,
+column_1,EU28-Railway transportation services,technosphere,,0,,
+column_1,EU28-Other land transportation services,technosphere,,0,,
+column_1,EU28-Waste management,technosphere,0.000002211,2,2.238117654,FALSE
+column_1,EU28-Intert/metal waste for treatment: incineration,technosphere,1.65196E-05,2,2.699910682,FALSE
+column_1,EU28-Sewage sludge for treatment: biogasification and land application,technosphere,-0.1,2,1.1,TRUE
+column_1,EU28-Other waste for treatment: waste water treatment,technosphere,5.67E-07,2,1.56,FALSE
+column_1,EU28-Inert/metal/hazardous waste for treatment: landfill,technosphere,,0,,
+column_1,N2O - combustion - air,biosphere,5.62,2,1.726331664,FALSE
+column_1,column_1,production,1,0,,FALSE
+column_2,EU28-Electricity by biomass and waste,technosphere,0,0,0,FALSE
+column_2,EU28-Electricity by solar photovoltaic,technosphere,0,0,0,FALSE
+column_2,EU28-Electricity by solar thermal,technosphere,1.1,2,2.2,FALSE
+column_2,"EU28-Electricity by tide, wave, ocean",technosphere,0,0,0,FALSE
+column_2,EU28-Electricity by Geothermal,technosphere,0,0,0,FALSE
+column_2,EU28-Electricity nec,technosphere,-1.2,2,2.3,TRUE
+column_2,EU28-Steam and hot water supply services,technosphere,0,0,0,FALSE
+column_2,"EU28-Collected and purified water, distribution services of water (41)",technosphere,0,0,0,FALSE
+column_2,EU28-Services,technosphere,1.3,2,2.4,FALSE
+column_2,EU28-Railway transportation services,technosphere,-1.4,2,2.5,TRUE
+column_2,EU28-Other land transportation services,technosphere,1.5,2,2.6,FALSE
+column_2,EU28-Waste management,technosphere,0,0,0,FALSE
+column_2,EU28-Intert/metal waste for treatment: incineration,technosphere,0,0,0,FALSE
+column_2,EU28-Sewage sludge for treatment: biogasification and land application,technosphere,0,0,0,FALSE
+column_2,EU28-Other waste for treatment: waste water treatment,technosphere,0,0,0,FALSE
+column_2,EU28-Inert/metal/hazardous waste for treatment: landfill,technosphere,-1.6,2,2.9,TRUE
+column_2,N2O - combustion - air,biosphere,1.7,2,2.99,FALSE
+column_2,column_2,production,1,0,,FALSE
