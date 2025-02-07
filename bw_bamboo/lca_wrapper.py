@@ -64,8 +64,8 @@ class LCAWrapper:
         """
         Perform Monte Carlo simulation without brightway.
         """
-        f = np.zeros(len(A))
+        f = np.zeros((len(A), 1))
         f[index] = 1
         lca_score = np.sum(C.dot(B.dot((np.linalg.inv(A)).dot(f))))
-
-        return lca_score
+        
+        return float(lca_score)

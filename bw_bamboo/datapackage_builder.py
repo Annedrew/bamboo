@@ -59,6 +59,12 @@ class DatapackageBuilder:
     def add_multifunctionality_negative(self, extend_data, act_column: str, negative_column: str, dp_uncertainty, dp_indices, activities: list):
         """
         Add uncertainty negative for multifunctionality foreground system.
+
+        Parameters:
+            * extend_data: user input file in dataframe format.
+            * negative_column: the column that setting uncertainty negative.
+            * dp_flip: the prepared flip numpy array for datapackage.
+            * dp_indices: the prepared indices numpy array for datapackage.
         """
         for uncertainty, indices in zip(dp_uncertainty, dp_indices):
             if indices[1] == 0:
@@ -75,7 +81,6 @@ class DatapackageBuilder:
 
         return dp_uncertainty
 
-    # Is it common people add ucnertainty to cf matrix?
     def prepare_datapackage(self, datapackage_data: List[Tuple[Any, ...]], uncertainty=None):
         """
         Prepare datapackage for brightway LCA calculation.
