@@ -51,7 +51,7 @@ class UncertaintyHandler:
         """
         if type in [0, 1]:
             uncertainty_tuple = (type, data, np.NaN, np.NaN, np.NaN, np.NaN, False)
-        elif type == "2":
+        elif type == 2:
             uncertainty_tuple = (type, np.log(data), np.log(gsd), np.NaN, np.NaN, np.NaN, False)
         elif type == 3: # normal
             uncertainty_tuple = (type, data, np.NaN, np.NaN, np.NaN, np.NaN, False)
@@ -76,20 +76,30 @@ class UncertaintyHandler:
 
         return uncertainty_value
 
-    def add_uncertainty(self, bw_data, bw_indices, bw_flip, fg_num, fg_strategy, bg_strategy):
+    def add_ununiform_uncertainty(self, bw_data, bw_indices, bw_flip, bg_strategy, fg_num=None, fg_strategy=None):
         """
-        strategy: "itemwise" or "columnwise"
+        Prepare uncertainty array for datapackage. By default, foreground system is not considered, but you can set youself.
+
+        Parameters:
+            * bw_data: One of the technosphere/bioshphere/characterization factor matrix in datapackage needed format.
+            * bw_indices: Matrix indices in datapackage needed format.
+            * bw_flip: Flip array of technosphere in datapackage needed format.
+            * bg_strategy: The uncertainty stragegy for one matrix in background system, two options available: "itemwise" and "columnwise"
+            * fg_num: The number of columns in the foreground system.
+            * fg_strategy: The uncertainty stragegy fsor one matrix in foreground system, two options available: "itemwise" and "columnwise"
         """
         uncertainty_array = []
         for i, data in enumerate(bw_data):
             row, col = bw_indices[i]
             act_index = col
-            if col > fg_num: # foreground situation
-                uncertainty_array.append(self.generate_uncertainty_tuple(data, self.metadata[act_index]["type"], self.get_uncertainty_value(fg_strategy, act_index, row)))
+            if fg_num is not None and fg_strategy is not None:
+                if col > fg_num: # foreground situation
+                    uncertainty_array.append(self.generate_uncertainty_tuple(data, self.metadata[act_index]["type"], self.get_uncertainty_value(fg_strategy, act_index, row)))
             else: # backgroundground situation
-                specific_index = col
                 uncertainty_array.append(self.generate_uncertainty_tuple(data, self.metadata[act_index]["type"], self.get_uncertainty_value(bg_strategy, act_index, row)))
                 
+        uncertainty_array = np.array(uncertainty_array, dtype=bwp.UNCERTAINTY_DTYPE)
+
         return uncertainty_array
     
     def add_uniform_uncertainty(self, type, gsd, bw_data, bw_flip):

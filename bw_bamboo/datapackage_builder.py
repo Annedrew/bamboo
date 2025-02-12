@@ -6,7 +6,7 @@ from typing import List, Tuple, Any
 
 
 class DatapackageBuilder:
-    def prepare_bw_matrix(self, tech_matrix, bio_matrix, cf_matrix):
+    def prepare_dp_matrix(self, tech_matrix, bio_matrix, cf_matrix):
         """
         Transform matrices data to bw matrices data, ready for the datapackages.
         """
@@ -34,6 +34,45 @@ class DatapackageBuilder:
             (cf_data, cf_indices)
         ]
 
+    def prepare_datapackage(self, datapackage_data: List[Tuple[Any, ...]], uncertainty: list = None):
+        """
+        Prepare datapackage for brightway LCA calculation.
+
+        Parameters:
+            * datapackage_data: A list of tuple includes all information to create a datapackage.
+            * uncertainty: The uncertainty for all matrices.
+        """
+        tech_data, tech_indices, tech_flip = datapackage_data[0]
+        bio_data, bio_indices = datapackage_data[1]
+        cf_data, cf_indices = datapackage_data[2]
+        if uncertainty is None:
+            tech_uncertainty, bio_uncertainty, cf_uncerainty = None, None, None
+        else:
+            tech_uncertainty, bio_uncertainty, cf_uncerainty = uncertainty[0], uncertainty[1], uncertainty[2]
+
+        dp = bwp.create_datapackage()
+        dp.add_persistent_vector(
+            matrix='technosphere_matrix',
+            indices_array=tech_indices,
+            data_array=tech_data,
+            flip_array=tech_flip,
+            distributions_array=tech_uncertainty,
+        )
+        dp.add_persistent_vector(
+            matrix='biosphere_matrix',
+            indices_array=bio_indices,
+            data_array=bio_data,
+            distributions_array=bio_uncertainty,
+        )
+        dp.add_persistent_vector(
+            matrix='characterization_matrix',
+            indices_array=cf_indices,
+            data_array=cf_data,
+            distributions_array=cf_uncerainty,
+        )
+
+        return dp
+    
     def add_multifunctionality_flip(self, extend_data: pd.DataFrame, act_column: str, flip_column: str, dp_flip: np.ndarray, dp_indices: np.ndarray, activities: list) -> np.ndarray:
         """
         Add flip sign for multifunctionality foreground system. (It's used when user's input is all positive values and only the last column shows to flip or not.)
@@ -80,42 +119,3 @@ class DatapackageBuilder:
                         pass
 
         return dp_uncertainty
-
-    def prepare_datapackage(self, datapackage_data: List[Tuple[Any, ...]], uncertainty=None):
-        """
-        Prepare datapackage for brightway LCA calculation.
-
-        Parameters:
-            * datapackage_data: A list of tuple includes all information to create a datapackage.
-            * uncertainty: The uncertainty for all matrices.
-        """
-        tech_data, tech_indices, tech_flip = datapackage_data[0]
-        bio_data, bio_indices = datapackage_data[1]
-        cf_data, cf_indices = datapackage_data[2]
-        if uncertainty is None:
-            tech_uncertainty, bio_uncertainty, cf_uncerainty = None, None, None
-        else:
-            tech_uncertainty, bio_uncertainty, cf_uncerainty = uncertainty[0], uncertainty[1], uncertainty[2]
-
-        dp = bwp.create_datapackage()
-        dp.add_persistent_vector(
-            matrix='technosphere_matrix',
-            indices_array=tech_indices,
-            data_array=tech_data,
-            flip_array=tech_flip,
-            distributions_array=tech_uncertainty,
-        )
-        dp.add_persistent_vector(
-            matrix='biosphere_matrix',
-            indices_array=bio_indices,
-            data_array=bio_data,
-            distributions_array=bio_uncertainty,
-        )
-        dp.add_persistent_vector(
-            matrix='characterization_matrix',
-            indices_array=cf_indices,
-            data_array=cf_data,
-            distributions_array=cf_uncerainty,
-        )
-
-        return dp
