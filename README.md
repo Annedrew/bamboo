@@ -14,7 +14,11 @@ python install -r requirements.txt
 - [Uncertainty analysis](https://github.com/Annedrew/brightway-bamboo/blob/main/notebooks/uncertainty_analysis.ipynb)
 
 
+
+## Illustration of importing foreground
+![importing foreground](assets/import_foreground_system.png)
+
 ## Illustration of uncertainty analysis
 | Process of add uncertainty uniformly | Process of add uncertainty ununiformly |
 |-------------------------------------------------|--------------------------------------------------|
-| ![Example Image 1](assets/uncertainty_uniformly.png) | ![Example Image 2](assets/uncertainty_ununiformly.png) |
+| ![uncertainty uniformly](assets/uncertainty_uniformly.png) | ![uncertainty ununiformly](assets/uncertainty_ununiformly.png) |
