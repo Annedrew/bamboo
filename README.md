@@ -7,11 +7,11 @@ python install -r requirements.txt
 ```
 
 ## Illustration of uncertainty analysis
-1) Add uncertainty uniformly
-![Example Image](assets/uncertainty_uniformly.png)
+1) Process of add uncertainty uniformly  
+![Example Image](assets/uncertainty_uniformly.png)  
 
-3) Add uncertainty ununiformly 
-![Example Image](assets/uncertainty_ununiformly.png)
+2) Process of add uncertainty ununiformly  
+![Example Image](assets/uncertainty_ununiformly.png)  
 
 ## Getting Started
 - [Import external database](https://github.com/Annedrew/brightway-bamboo/blob/main/notebooks/lca_with_foreground.ipynb)
