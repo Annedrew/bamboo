@@ -7,18 +7,10 @@ python install -r requirements.txt
 ```
 
 ## Illustration of uncertainty analysis
-<div style="display: flex;">
-  <div style="flex: 1; padding: 10px;">
-    <!-- Left column content -->
-    1) Process of add uncertainty uniformly  
-    ![Example Image](assets/uncertainty_uniformly.png)  
-  </div>
-  <div style="flex: 1; padding: 10px;">
-    <!-- Right column content -->
-    2) Process of add uncertainty ununiformly  
-    ![Example Image](assets/uncertainty_ununiformly.png)  
-  </div>
-</div>
+| 1) Process of add uncertainty uniformly | 2) Process of add uncertainty ununiformly |
+|-------------------------------------------------|--------------------------------------------------|
+| ![Example Image 1](assets/uncertainty_uniformly.png) | ![Example Image 2](assets/uncertainty_ununiformly.png) |
+| 1) Process of add uncertainty uniformly         | 2) Process of add uncertainty ununiformly       |
 
 
 1) Process of add uncertainty uniformly  
