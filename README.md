@@ -1,3 +1,4 @@
+## Bamboo
 `Bamboo` is a Python package designed to import external databases with Brightway 2.5 framework, and assist you to model different types of uncertainty analysis or scenario analysis with datapackage matrix data.
 
 ## Dependencies
