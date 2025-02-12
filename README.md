@@ -1,3 +1,4 @@
+## Bamboo
 `Bamboo` is a Python package designed to import external databases with Brightway 2.5 framework, and assist you to model different types of uncertainty analysis or scenario analysis with datapackage matrix data.
 
 ## Dependencies
@@ -6,7 +7,14 @@ The dependencies needed for this library, is listed in `requirements.txt`, to in
 python install -r requirements.txt
 ```
 
+
 ## Getting Started
 - [Import external database](https://github.com/Annedrew/brightway-bamboo/blob/main/notebooks/lca_with_foreground.ipynb)
 - [LCA with Brightway 2.5](https://github.com/Annedrew/brightway-bamboo/blob/main/notebooks/lca_with_background.ipynb)
 - [Uncertainty analysis](https://github.com/Annedrew/brightway-bamboo/blob/main/notebooks/uncertainty_analysis.ipynb)
+
+
+## Illustration of uncertainty analysis
+| Process of add uncertainty uniformly | Process of add uncertainty ununiformly |
+|-------------------------------------------------|--------------------------------------------------|
+| ![Example Image 1](assets/uncertainty_uniformly.png) | ![Example Image 2](assets/uncertainty_ununiformly.png) |
