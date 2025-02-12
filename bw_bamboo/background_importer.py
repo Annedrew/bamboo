@@ -47,7 +47,7 @@ class BackgroundImporter:
         # create a df mapping name to code.
         emission_df = pd.read_csv(emission_file, delimiter=",")
         emission_df = file_preprocessing(emission_file, ",", "exiobase name", emission_list)  # sorting the column order align with the desired order.
-        codes = emission_df.iloc[:, -1].copy()  # by default, the last column is the 'code' column
+        codes = emission_df["brightway code"].copy()
         bg_name = emission_df.iloc[:, 0].copy()  # by default, the first column is the 'background emission name' column
         name_code = pd.concat([codes, bg_name], axis=1, ignore_index=True)
         name_code.columns = ["code", "name"]
