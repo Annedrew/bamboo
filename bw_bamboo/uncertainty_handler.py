@@ -49,9 +49,10 @@ class UncertaintyHandler:
             * type: The type of uncertainty, such as 2.
             * gsd: Geometric Standard Deviation, used to calculate sigma of lognormal distribution.
         """
+        data = abs(data)
         if type in [0, 1]:
             uncertainty_tuple = (type, data, np.NaN, np.NaN, np.NaN, np.NaN, False)
-        elif type == 2:
+        elif type == 2:  # no need to consider data == 0, because sparse matrix only save non-zero values.
             uncertainty_tuple = (type, np.log(data), np.log(gsd), np.NaN, np.NaN, np.NaN, False)
         elif type == 3: # normal
             uncertainty_tuple = (type, data, np.NaN, np.NaN, np.NaN, np.NaN, False)
