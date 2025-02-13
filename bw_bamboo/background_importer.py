@@ -16,9 +16,6 @@ class BackgroundImporter:
         identity_matrix = np.identity(len(raw_tech))
         tech_matrix = - (identity_matrix - raw_tech)
         np.fill_diagonal(tech_matrix, -tech_matrix.diagonal())
-        
-        if (tech_matrix < 0).any().any():
-            raise ValueError("Transformation failed, negative values remain.")
 
         return tech_matrix
 
