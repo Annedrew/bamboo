@@ -4,7 +4,6 @@ import numpy as np
 from .utils import *
 
 
-# TODO: Modify the metadata data structure to the structure in the example.
 class UncertaintyHandler:
     def __init__(self):
         """
@@ -31,7 +30,6 @@ class UncertaintyHandler:
             ...
         }
         """
-        uncertainty_type = ["Undefined", "No uncertainty", "Lognormal", "Normal", "Uniform"] # only handle until 4.
         self.metadata = {}
 
     def calc_specific_uncertainty(self, data, uncertainty):

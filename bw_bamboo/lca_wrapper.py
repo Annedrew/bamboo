@@ -1,4 +1,3 @@
-# TODO: EXAMPLES
 import bw2calc as bc
 import pandas as pd
 import numpy as np
@@ -30,7 +29,7 @@ class LCAWrapper:
         filename = os.path.join(directory, f"CASE_{k}_{t}_MC_simulations_{myact}.csv")
 
         with open(filename, "w") as file:
-            file.write("kg CO2eq\n") # Write the header
+            file.write("kg CO2eq\n") # TODO: Write the header
             file.write(f"{lca.score}")
             print(f"Static LCA result saved to {filename}.")
 
