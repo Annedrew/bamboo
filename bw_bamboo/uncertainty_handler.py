@@ -46,6 +46,7 @@ class UncertaintyHandler:
         Parameters:
             * strategy: The strategy of adding uncertainty, "itemwise" or "columnwise".
             * act_index: The index of the activity.
+            * row: The row number of the corresponding activity.
         """
         if self.metadata is None:
             print("Please write your uncertainty information into metadata first.")

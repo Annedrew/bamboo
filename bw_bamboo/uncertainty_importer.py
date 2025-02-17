@@ -1,6 +1,5 @@
-# TODO: 这个是多个列的
 import pandas as pd
-from .metadata_manager import * # TODO: 为什么不是这个？
+from .metadata_manager import *
 
 
 class UncertaintyImporter:
