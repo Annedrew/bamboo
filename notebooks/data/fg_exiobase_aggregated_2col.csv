@@ -16,7 +16,7 @@ column_1,EU28-Sewage sludge for treatment: biogasification and land application,
 column_1,EU28-Other waste for treatment: waste water treatment,technosphere,5.67E-07,2,1.56,FALSE
 column_1,EU28-Inert/metal/hazardous waste for treatment: landfill,technosphere,,0,,
 column_1,N2O - combustion - air,biosphere,5.62,2,1.726331664,FALSE
-column_1,column_1,production,1,0,,FALSE
+column_1,column_1,production,1,2,1.1,FALSE
 column_2,EU28-Electricity by biomass and waste,technosphere,0,0,0,FALSE
 column_2,EU28-Electricity by solar photovoltaic,technosphere,0,0,0,FALSE
 column_2,EU28-Electricity by solar thermal,technosphere,1.1,2,2.2,FALSE
@@ -34,4 +34,4 @@ column_2,EU28-Sewage sludge for treatment: biogasification and land application,
 column_2,EU28-Other waste for treatment: waste water treatment,technosphere,0,0,0,FALSE
 column_2,EU28-Inert/metal/hazardous waste for treatment: landfill,technosphere,-1.6,2,2.9,TRUE
 column_2,N2O - combustion - air,biosphere,1.7,2,2.99,FALSE
-column_2,column_2,production,1,0,,FALSE
+column_2,column_2,production,1,2,2.2,FALSE
