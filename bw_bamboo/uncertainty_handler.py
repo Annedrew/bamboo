@@ -46,18 +46,21 @@ class UncertaintyHandler:
         Parameters:
             * strategy: The strategy of adding uncertainty, "itemwise" or "columnwise".
             * act_index: The index of the activity.
-            * row: The row number of the corresponding activity.
         """
         if self.metadata is None:
             print("Please write your uncertainty information into metadata first.")
+        
+        if len(self.metadata) < row:
+            row = row - len(self.metadata) + 1
+
         if strategy == "itemwise":
-            specific = self.metadata[act_index].get("specific", 0)
-            if specific != 0:
+            specific = self.metadata[act_index].get("Exchange uncertainty amount", 0)
+            if isinstance(specific, list):
                 uncertainty_value = specific[row]
-            else:
+            else:  # because some activity don't have uncertainty at all, in this case is background system
                 uncertainty_value = specific
         elif strategy == "columnwise":
-            uncertainty_value = self.metadata[act_index].get("GSD", 0)
+            uncertainty_value = self.metadata[act_index].get("Exchange uncertainty amount", 0)
             uncertainty_value = 0 if np.isnan(uncertainty_value) else uncertainty_value
 
         return uncertainty_value
@@ -80,14 +83,15 @@ class UncertaintyHandler:
         uncertainty_array = []
         for i, data in enumerate(bw_data):
             row, col = bw_indices[i]
-            print("row here: ", row)
             act_index = col
             if fg_num is not None and fg_strategy is not None:
-                if col > fg_num: # foreground situation
-                    uncertainty_type = self.metadata[act_index].get("Exchange uncertainty type", 0)
+                uncertainty_type = self.metadata[act_index].get("Activity uncertainty type", 0)
+                if act_index < fg_num: # foreground situation
                     uncertainty_array.append(self.generate_uncertainty_tuple(data, uncertainty_type, self.get_uncertainty_value(fg_strategy, act_index, row)))
+                else:
+                    uncertainty_array.append(self.generate_uncertainty_tuple(data, uncertainty_type, self.get_uncertainty_value(bg_strategy, act_index, row)))
             else: # backgroundground situation
-                uncertainty_type = self.metadata[act_index].get("Exchange uncertainty type", 0)
+                uncertainty_type = self.metadata[act_index].get("Activity uncertainty type", 0)
                 uncertainty_array.append(self.generate_uncertainty_tuple(data, uncertainty_type, self.get_uncertainty_value(bg_strategy, act_index, row)))
                 
         uncertainty_array = np.array(uncertainty_array, dtype=bwp.UNCERTAINTY_DTYPE)

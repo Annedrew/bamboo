@@ -41,17 +41,26 @@ class UncertaintyImporter:
         selected_dict = selected_df.set_index("Exchange name")[["Exchange uncertainty type", "GSD", "Exchange negative"]].to_dict(orient="index")
 
         if strategy == "itemwise":
-            selected_df = selected_df.set_index("Exchange name")[["Exchange uncertainty type", "GSD", "Exchange negative"]]
-            selected_df = selected_df.reindex(activities, fill_value=0)
-            gsd_list = selected_df["GSD"].fillna(0).tolist()
-
+            selected_df_2 = selected_df.set_index("Exchange name")[["Exchange uncertainty type", "GSD", "Exchange negative"]]
+            selected_df_2 = selected_df_2.reindex(activities, fill_value=0)
+            gsd_list = selected_df_2["GSD"].fillna(0).tolist()
+            negative_list = selected_df_2["Exchange negative"].replace(0, False).fillna(False).tolist()
             for key, value in self.metadata.items():
                 activity_name = value["Activity name"]
                 if activity_name in selected_dict:
-                    self.metadata[key].update(selected_dict.get(activity_name, {}))
-                    self.metadata[key]["specific"] = gsd_list
+                    index = activities.index(act_name)
+                    uncertainty_type = selected_df[selected_df["Exchange name"] == act_name]["Exchange uncertainty type"].to_list()[0]
+                    self.metadata[index]["Activity uncertainty type"] = uncertainty_type
+                    self.metadata[index]["Exchange uncertainty amount"] = gsd_list
+                    self.metadata[index]["Exchange negative"] = negative_list
         elif strategy == "columnwise":
             for key, value in self.metadata.items():
                 activity_name = value["Activity name"]
                 if activity_name in selected_dict:
-                    self.metadata[key].update(selected_dict.get(activity_name, {}))
+                    index = activities.index(act_name)
+                    uncertainty_type = selected_df[selected_df["Exchange name"] == act_name]["Exchange uncertainty type"].to_list()[0]
+                    self.metadata[index]["Activity uncertainty type"] = uncertainty_type
+                    self.metadata[index]["Exchange uncertainty amount"] = selected_df[selected_df["Exchange name"] == act_name]["GSD"].to_list()[0]
+                    self.metadata[index]["Exchange negative"] = selected_df[selected_df["Exchange name"] == act_name]["Exchange negative"].to_list()[0]
+        else:
+            print(F"Strategy {strategy} is not supported, you should either choose 'columnwise' or 'itemwise'")
