@@ -5,7 +5,7 @@ from .utils import *
 
 
 class BackgroundImporter:
-    def form_tech_matrix(self, raw_tech: np.ndarray):
+    def build_tech_matrix(self, raw_tech: np.ndarray):
         """
         Get technosphere matrix data:
             Calculate (I-A), then convert it into a totally positive matrix.
@@ -22,7 +22,7 @@ class BackgroundImporter:
 
         return tech_matrix
 
-    def form_bio_matrix(self, bio_df, emissions) -> np.ndarray:
+    def build_bio_matrix(self, bio_df, emissions) -> np.ndarray:
         """
         Get biosphere matrix data:
             Extract the corresponding value by emission name.
@@ -48,7 +48,7 @@ class BackgroundImporter:
         Returns:
             * list: Return the cf values as a list.
         """
-        column_name = "cf values"
+        column_name = "cf value"
         if column_name not in emission_df.columns:
             print("The file doesn't have a 'cf values' column. Please add your characterization factor values to the 'cf values' column.")
         else:
@@ -131,16 +131,16 @@ class BackgroundImporter:
         
         return None
 
-    def form_cf_matrix(self, ecoinvent_name: str, method: tuple, emission_file: str, emission_list: list, source="cf") -> np.ndarray:
+    def build_cf_matrix(self, ecoinvent_name: str, method: tuple, emission_file: str, emission_list: list, source="cf") -> np.ndarray:
         """
         Get characterization factor matrix data.
 
         Parameters: 
-            * ecoinvent_name: The name of the ecoinvent database on user's device.
+            * ecoinvent_name: The name of the ecoinvent biosphere database on user's device.
             * method: The method used for LCA calculation.
             * emission_file: The path to the file that needs to be processed. The file includes emission name and emission code column.
             * emission_list: the list of emissions in foreground system
-            * source: define the data source, two options: "cf" or "code". Set to "cf", the function extract cf values from "cf values" column of the file, set to "code", the function extract cf values from "brightway code" column of the file.
+            * source: define the data source, two options: "cf" or "code". Set to "cf", the function extract cf values from "cf value" column of the file, set to "code", the function extract cf values from "brightway code" column of the file.
 
         Returns: 
             * np.ndarray | None: Return the numpy matrix format of characterization factor (cf) values if found, otherwise None.
