@@ -1,4 +1,4 @@
-Activity name,Exchange name,Exchange type,Exchange amount,Exchange uncertainty type,u,Exchange negative
+Activity name,Exchange name,Exchange type,Exchange amount,Exchange uncertainty type,GSD,Exchange negative
 column_1,EU28-Agriculture-Forestry-Fishing,technosphere,0,0,,
 column_1,EU28-Energy,technosphere,,0,,
 column_1,"EU28-Natural gas and services related to natural gas extraction, excluding surveying",technosphere,,0,,

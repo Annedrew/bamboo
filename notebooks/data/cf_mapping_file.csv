@@ -1,4 +1,4 @@
-exiobase name,exiobase unit,ecoinvent name,ecoinvent category,ecoinvent subcategory,ecoinvent unit,scale factor,new flow,comment,brightway code,cf value
+exiobase name,exiobase unit,ecoinvent name,ecoinvent category,ecoinvent subcategory,ecoinvent unit,scale factor,new flow,comment,brightway code,CFs
 CH4 - agriculture - air,kg,"Methane, non-fossil",air,"low population density, long-term",kg,1,0,,6c977009-5c4e-4901-a4c1-ab20389cb972,27
 CH4 - combustion - air,kg,"Methane, fossil",air,,kg,1,0,,0795345f-c7ae-410c-ad25-1845784c75f5,29.8
 CH4 - non combustion - Extraction/production of (natural) gas - air,kg,"Methane, fossil",air,,kg,1,0,Probably most rural,0795345f-c7ae-410c-ad25-1845784c75f5,29.8
