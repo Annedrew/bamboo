@@ -17,6 +17,10 @@ class UncertaintyImporter:
             self.df = pd.read_csv(self.file_path, delimiter=self.delimiter)
 
     def update_metadata_uncertainty(self, activities, strategy):  # TODO: What if they have the same name?
+        """
+        Parameters:
+            * strategy: "itemwise" or "columnwise"
+        """
         self.update_metadata_activities(activities)
 
         self._load_df()
@@ -42,8 +46,8 @@ class UncertaintyImporter:
         if strategy == "itemwise":
             selected_df_2 = selected_df.set_index("Exchange name")[["Exchange uncertainty type", "GSD", "Exchange negative"]]
             selected_df_2 = selected_df_2.reindex(activities, fill_value=0)
-            gsd_list = selected_df_2["GSD"].fillna(0).tolist()
-            negative_list = selected_df_2["Exchange negative"].replace(0, False).fillna(False).tolist()
+            gsd_list = selected_df_2["GSD"].astype(float).fillna(0).tolist()
+            negative_list = selected_df_2["Exchange negative"].replace(0, False).astype(bool).fillna(False).tolist()
             for key, value in self.metadata.items():
                 activity_name = value["Activity name"]
                 if activity_name in selected_dict:
