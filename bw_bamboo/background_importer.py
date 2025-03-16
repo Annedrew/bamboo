@@ -131,15 +131,15 @@ class BackgroundImporter:
         
         return None
 
-    def build_cf_matrix(self, ecoinvent_name: str, method: tuple, emission_file: str, emission_list: list, source="cf") -> np.ndarray:
+    def build_cf_matrix(self, emission_file: str, emission_list: list, ecoinvent_name: str = None, method: tuple = None, source="cf") -> np.ndarray: # TODO: should here called ecoinvent_name or database_name? I wonder is there any other database.
         """
         Get characterization factor matrix data.
 
         Parameters: 
-            * ecoinvent_name: The name of the ecoinvent biosphere database on user's device.
-            * method: The method used for LCA calculation.
             * emission_file: The path to the file that needs to be processed. The file includes emission name and emission code column.
             * emission_list: the list of emissions in foreground system
+            * ecoinvent_name: The name of the ecoinvent biosphere database on user's device.
+            * method: The method used for LCA calculation.
             * source: define the data source, two options: "cf" or "code". Set to "cf", the function extract cf values from "cf value" column of the file, set to "code", the function extract cf values from "brightway code" column of the file.
 
         Returns: 
