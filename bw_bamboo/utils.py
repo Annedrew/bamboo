@@ -5,7 +5,7 @@ import numpy as np
 
 def get_country_sector(activity):
     """
-    Separate the country and sector.
+    Design for EXIOBASE: Separate the country and sector.
     
     Parameters:
         * activity: The activity name that needs to be processed.
@@ -42,11 +42,6 @@ def get_bg_activities(a_file_path: str, delimiter: str) -> list:
 
     return activities
 
-# TODO
-def separate_fg_bg(bw_data, bw_indices, bw_flip):
-    
-    return 
-
 def file_preprocessing(file_name, delimiter: str, column_name: str, expacted_order: list):
     """
     Preprocess a file and return a DataFrame with the desired order.
@@ -64,7 +59,7 @@ def file_preprocessing(file_name, delimiter: str, column_name: str, expacted_ord
 
 def map_pedigree_uncertainty(country_file, sector_file, region_sector_file):
     """
-    Build dictionaries to mapping specific uncertainty.
+    Design for case study: Build dictionaries to mapping specific uncertainty.
     
     Parameters:
         * country_file: The file that group country to region.
@@ -80,27 +75,9 @@ def map_pedigree_uncertainty(country_file, sector_file, region_sector_file):
 
     return country_region, sector_seccat, region_sector_data
 
-def map_pedigree_uncertainty(country_file, sector_file, region_sector_file):
-    """
-    Build dictionaries to mapping specific uncertainty.
-    
-    Parameters:
-        * country_file: The file that group country to region.
-        * sector_file: The file that group sector to aggregated sector.
-        * region_sector_file: The mapping from aggregated region and sector to GSD. 
-    """
-    country_dfs = pd.read_csv(country_file, delimiter=";")
-    sector_dfs = pd.read_csv(sector_file, delimiter=";")
-    region_sector_dfs = pd.read_csv(region_sector_file, delimiter=";")
-
-    country_region = country_dfs.set_index(country_dfs.columns[0])[country_dfs.columns[1]].to_dict()
-    sector_seccat = sector_dfs.set_index(sector_dfs.columns[0])[sector_dfs.columns[1]].to_dict()
-
-    return country_region, sector_seccat, region_sector_dfs
-
 def find_pedigree_uncertainty(activity, country_region, sector_seccat, region_sector_dfs):
     """
-    Search for uncertainty for specific activity or biosphere flow.
+    Design for case study: Search for pedigree uncertainty for specific activity or biosphere flow.
     """
     country, sector = get_country_sector(activity)
     region_category =  country_region.get(country, None)
@@ -114,8 +91,10 @@ def find_pedigree_uncertainty(activity, country_region, sector_seccat, region_se
 
     return gsd
 
-# design for pedigree and specific uncertainty only
 def add_uncertainty(self, bw_data, bw_indices, bw_flip):
+    """
+    Design for case study: Add pedigree and specific uncertainty
+    """
     bw_uncertainties = []
     if bw_flip is not None: # technosphere
         k = 0
