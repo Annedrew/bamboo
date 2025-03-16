@@ -40,17 +40,17 @@ class BackgroundImporter:
 
     def get_from_cfs(self, emission_df):
         """
-        Get the characterization factor values (type: list) from characterization factor file in dataframe format.
+        Get the characterization factors (type: list) from characterization factor file in dataframe format.
 
         Parameters:
             * emission_df: The dataframe format of characterization factor file, provide characterization factor matrix raw data.
             
         Returns:
-            * list: Return the cf values as a list.
+            * list: Return the CFs as a list.
         """
-        column_name = "cf value"
+        column_name = "CFs"
         if column_name not in emission_df.columns:
-            print("The file doesn't have a 'cf values' column. Please add your characterization factor values to the 'cf values' column.")
+            print("The file doesn't have a 'CFs' column. Please add your characterization factor values to the 'CFs' column.")
         else:
             cf_df = emission_df[column_name]
             if not cf_df.isnull().any():
@@ -61,8 +61,8 @@ class BackgroundImporter:
                 emission_values = emission_df[column_name].to_list()
                 cf_missing = emission_df[emission_df[column_name].isnull()]["exiobase name"].to_list()
                 
-                print(f"{cf_missing} emission(s) don't have characterization factor values. Please complete your 'cf values' column.")
-                # print the founded cf values
+                print(f"{cf_missing} emission(s) don't have characterization factor values. Please complete your 'CFs' column.")
+                # print the founded CFs
                 # print(f"Emissions: \n{emission_names}")
                 # print(f"Characteriation factor values: \n{emission_values}")
 
@@ -131,16 +131,16 @@ class BackgroundImporter:
         
         return None
 
-    def build_cf_matrix(self, emission_file: str, emission_list: list, ecoinvent_name: str = None, method: tuple = None, source="cf") -> np.ndarray: # TODO: should here called ecoinvent_name or database_name? I wonder is there any other database.
+    def build_cf_matrix(self, emission_file: str, emission_list: list, biodb_name: str = None, method: tuple = None, source="cf") -> np.ndarray:
         """
         Get characterization factor matrix data.
 
         Parameters: 
             * emission_file: The path to the file that needs to be processed. The file includes emission name and emission code column.
             * emission_list: the list of emissions in foreground system
-            * ecoinvent_name: The name of the ecoinvent biosphere database on user's device.
-            * method: The method used for LCA calculation.
-            * source: define the data source, two options: "cf" or "code". Set to "cf", the function extract cf values from "cf value" column of the file, set to "code", the function extract cf values from "brightway code" column of the file.
+            * biodb_name: The name of the biosphere database on user's device.
+            * method: The LCIA method used for LCA calculation.
+            * source: define the data source, two options: "cf" or "code". Set to "cf", the function extract CFs from "cf value" column of the file, set to "code", the function extract CFs from "brightway code" column of the file.
 
         Returns: 
             * np.ndarray | None: Return the numpy matrix format of characterization factor (cf) values if found, otherwise None.
@@ -154,14 +154,14 @@ class BackgroundImporter:
                 cf_matrix = np.diagflat(cf_values)
                 return cf_matrix
             else:
-                print("Failed to build matrix, there are cf values not found.")
+                print("Failed to build matrix, there are CFs not found.")
         elif source == "code":
-            cf_values = self.get_from_code(emission_df, method, ecoinvent_name)
+            cf_values = self.get_from_code(emission_df, method, biodb_name)
             if cf_values:
                 cf_matrix = np.diagflat(cf_values)
                 return cf_matrix
             else:
-                print("Failed to build matrix, there are cf values not found.")
+                print("Failed to build matrix, there are CFs not found.")
         else:
             print('Please set the source to either "cf" or "code".')
             
