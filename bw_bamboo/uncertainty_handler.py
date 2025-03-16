@@ -51,7 +51,7 @@ class UncertaintyHandler:
         if self.metadata is None:
             print("Please write your uncertainty information into metadata first.")
         
-        if len(self.metadata) < row:
+        if len(self.metadata) < row:  # If biosphere, indices need to be subtracted from technosphere indices.
             row = row - len(self.metadata) + 1
 
         if strategy == "itemwise":
@@ -85,19 +85,17 @@ class UncertaintyHandler:
         for i, data in enumerate(bw_data):
             row, col = bw_indices[i]
             act_index = col
+            uncertainty_type = self.metadata[act_index].get("Activity uncertainty type", 0)
             if fg_num is not None and fg_strategy is not None:
-                uncertainty_type = self.metadata[act_index].get("Activity uncertainty type", 0)
                 if act_index < fg_num: # foreground situation
-                    uncertainty_array.append(self.generate_uncertainty_tuple(data, uncertainty_type, self.get_uncertainty_value(fg_strategy, act_index, row)))
+                    strategy = fg_strategy
                 else:
-                    uncertainty_array.append(self.generate_uncertainty_tuple(data, uncertainty_type, self.get_uncertainty_value(bg_strategy, act_index, row)))
-            else: # backgroundground situation
-                uncertainty_type = self.metadata[act_index].get("Activity uncertainty type", 0)
-                uncertainty_array.append(self.generate_uncertainty_tuple(data, uncertainty_type, self.get_uncertainty_value(bg_strategy, act_index, row)))
-                
-        uncertainty_array = np.array(uncertainty_array, dtype=bwp.UNCERTAINTY_DTYPE)
+                    strategy = bg_strategy
+            else:
+                strategy = bg_strategy
+            uncertainty_array.append(self.generate_uncertainty_tuple(data, uncertainty_type, self.get_uncertainty_value(strategy, act_index, row)))
 
-        return uncertainty_array
+        return np.array(uncertainty_array, dtype=bwp.UNCERTAINTY_DTYPE)
     
     def add_uniform_uncertainty(self, type, gsd, bw_data, bw_flip):
         """
