@@ -15,7 +15,7 @@ class UncertaintyHandler:
 
         return loc, scale
 
-    def generate_uncertainty_tuple(self, data, type, gsd):
+    def generate_uncertainty_tuple(self, data, type, gsd, uncertainty_negative):
         """
         Generate the uncertainty tuple for one value.
 
@@ -23,19 +23,20 @@ class UncertaintyHandler:
             * data: The input or output value of the one exchange in the system.
             * type: The type of uncertainty, such as 2.
             * gsd: Geometric Standard Deviation, used to calculate sigma of lognormal distribution.
+            * uncertainty_negative: uncertainty negative
         """
         data = abs(data)
         if type in [0, 1]:
-            uncertainty_tuple = (type, data, np.NaN, np.NaN, np.NaN, np.NaN, False)
+            uncertainty_tuple = (type, data, np.NaN, np.NaN, np.NaN, np.NaN, uncertainty_negative)
         elif type == 2:  # no need to consider data == 0, because sparse matrix only save non-zero values.
             if gsd == 0:
-                uncertainty_tuple = (0, data, np.NaN, np.NaN, np.NaN, np.NaN, False)
+                uncertainty_tuple = (0, data, np.NaN, np.NaN, np.NaN, np.NaN, uncertainty_negative)
             else:
-                uncertainty_tuple = (type, np.log(data), np.log(gsd), np.NaN, np.NaN, np.NaN, False)
+                uncertainty_tuple = (type, np.log(data), np.log(gsd), np.NaN, np.NaN, np.NaN, uncertainty_negative)
         elif type == 3: # normal
-            uncertainty_tuple = (type, data, np.NaN, np.NaN, np.NaN, np.NaN, False)
+            uncertainty_tuple = (type, data, np.NaN, np.NaN, np.NaN, np.NaN, uncertainty_negative)
         elif type == 4: # uniform
-            uncertainty_tuple = (type, np.NaN, np.NaN, np.NaN, (data - data * gsd), (data + data * gsd), False)
+            uncertainty_tuple = (type, np.NaN, np.NaN, np.NaN, (data - data * gsd), (data + data * gsd), uncertainty_negative)
 
         return uncertainty_tuple
     
@@ -65,6 +66,32 @@ class UncertaintyHandler:
             uncertainty_value = 0 if np.isnan(uncertainty_value) else uncertainty_value
 
         return uncertainty_value
+    
+    def get_uncertainty_negative(self, strategy, act_index, row):
+        """
+        Get uncertainty negative (TRUE or FALSE) by strategy from metadata.
+
+        Parameters:
+            * strategy: The strategy of adding uncertainty, "itemwise" or "columnwise".
+            * act_index: The index of the activity.
+            * row: The row number of the corresponding activity.
+        """
+        if self.metadata is None:
+            print("Please write your uncertainty information into metadata first.")
+        
+        if len(self.metadata) < row:  # If biosphere, indices need to be subtracted from technosphere indices.
+            row = row - len(self.metadata) + 1
+
+        if strategy == "itemwise":
+            specific = self.metadata[act_index].get("Exchange negative", False)
+            if isinstance(specific, list):
+                uncertainty_negative = specific[row]
+            else:  # because some activity don't have uncertainty at all, in this case is background system
+                uncertainty_negative = specific
+        elif strategy == "columnwise":
+            uncertainty_negative = self.metadata[act_index].get("Exchange negative", False)
+
+        return uncertainty_negative
 
     def add_nonuniform_uncertainty(self, bw_data, bw_indices, bw_flip, bg_strategy, fg_num=None, fg_strategy=None):
         """
@@ -93,7 +120,7 @@ class UncertaintyHandler:
                     strategy = bg_strategy
             else:
                 strategy = bg_strategy
-            uncertainty_array.append(self.generate_uncertainty_tuple(data, uncertainty_type, self.get_uncertainty_value(strategy, act_index, row)))
+            uncertainty_array.append(self.generate_uncertainty_tuple(data, uncertainty_type, self.get_uncertainty_value(strategy, act_index, row), self.get_uncertainty_negative(strategy, act_index, row)))
 
         return np.array(uncertainty_array, dtype=bwp.UNCERTAINTY_DTYPE)
     
