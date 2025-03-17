@@ -2,35 +2,12 @@ import bw_processing as bwp
 import pandas as pd
 import numpy as np
 from .utils import *
+from .metadata_manager import *
 
 
 class UncertaintyHandler:
     def __init__(self):
-        """
-        self.metadata: save activity information, including: 
-                activity index(the index in the datapackage), 
-                uncertainty type, 
-                activity name, 
-                itemwise uncertainty value,
-                and columnwise uncertainty value. (Here the uncertainy value means the mu value.)
-
-        metadata = {
-            index1: {
-                "type": 1,
-                "act": act1,
-                "specific": [specific1, specific2, specific3, ...],
-                "gsd": 0,
-            },
-            index2: {
-                "type": 2,
-                "act": act2,
-                "specific": [],
-                "gsd": gsd2,
-            },
-            ...
-        }
-        """
-        self.metadata = {}
+        self.metadata = metadata_manager.get_metadata()
 
     def calc_specific_uncertainty(self, data, uncertainty):
         loc = np.log(data)
@@ -51,7 +28,10 @@ class UncertaintyHandler:
         if type in [0, 1]:
             uncertainty_tuple = (type, data, np.NaN, np.NaN, np.NaN, np.NaN, False)
         elif type == 2:  # no need to consider data == 0, because sparse matrix only save non-zero values.
-            uncertainty_tuple = (type, np.log(data), np.log(gsd), np.NaN, np.NaN, np.NaN, False)
+            if gsd == 0:
+                uncertainty_tuple = (0, data, np.NaN, np.NaN, np.NaN, np.NaN, False)
+            else:
+                uncertainty_tuple = (type, np.log(data), np.log(gsd), np.NaN, np.NaN, np.NaN, False)
         elif type == 3: # normal
             uncertainty_tuple = (type, data, np.NaN, np.NaN, np.NaN, np.NaN, False)
         elif type == 4: # uniform
@@ -68,14 +48,25 @@ class UncertaintyHandler:
             * act_index: The index of the activity.
             * row: The row number of the corresponding activity.
         """
+        if self.metadata is None:
+            print("Please write your uncertainty information into metadata first.")
+        
+        if len(self.metadata) < row:  # If biosphere, indices need to be subtracted from technosphere indices.
+            row = row - len(self.metadata) + 1
+
         if strategy == "itemwise":
-            uncertainty_value = self.metadata[act_index]["specific"][row]
+            specific = self.metadata[act_index].get("Exchange uncertainty amount", 0)
+            if isinstance(specific, list):
+                uncertainty_value = specific[row]
+            else:  # because some activity don't have uncertainty at all, in this case is background system
+                uncertainty_value = specific
         elif strategy == "columnwise":
-            uncertainty_value = self.metadata[act_index]["gsd"]
+            uncertainty_value = self.metadata[act_index].get("Exchange uncertainty amount", 0)
+            uncertainty_value = 0 if np.isnan(uncertainty_value) else uncertainty_value
 
         return uncertainty_value
 
-    def add_ununiform_uncertainty(self, bw_data, bw_indices, bw_flip, bg_strategy, fg_num=None, fg_strategy=None):
+    def add_nonuniform_uncertainty(self, bw_data, bw_indices, bw_flip, bg_strategy, fg_num=None, fg_strategy=None):
         """
         Prepare uncertainty array for datapackage. By default, foreground system is not considered, but you can set youself.
 
@@ -87,19 +78,24 @@ class UncertaintyHandler:
             * fg_num: The number of columns in the foreground system.
             * fg_strategy: The uncertainty stragegy fsor one matrix in foreground system, two options available: "itemwise" and "columnwise"
         """
+        if self.metadata is None:
+            print("Please write your uncertainty information into metadata first.")
+
         uncertainty_array = []
         for i, data in enumerate(bw_data):
             row, col = bw_indices[i]
             act_index = col
+            uncertainty_type = self.metadata[act_index].get("Activity uncertainty type", 0)
             if fg_num is not None and fg_strategy is not None:
-                if col > fg_num: # foreground situation
-                    uncertainty_array.append(self.generate_uncertainty_tuple(data, self.metadata[act_index]["type"], self.get_uncertainty_value(fg_strategy, act_index, row)))
-            else: # backgroundground situation
-                uncertainty_array.append(self.generate_uncertainty_tuple(data, self.metadata[act_index]["type"], self.get_uncertainty_value(bg_strategy, act_index, row)))
-                
-        uncertainty_array = np.array(uncertainty_array, dtype=bwp.UNCERTAINTY_DTYPE)
+                if act_index < fg_num: # foreground situation
+                    strategy = fg_strategy
+                else:
+                    strategy = bg_strategy
+            else:
+                strategy = bg_strategy
+            uncertainty_array.append(self.generate_uncertainty_tuple(data, uncertainty_type, self.get_uncertainty_value(strategy, act_index, row)))
 
-        return uncertainty_array
+        return np.array(uncertainty_array, dtype=bwp.UNCERTAINTY_DTYPE)
     
     def add_uniform_uncertainty(self, type, gsd, bw_data, bw_flip):
         """

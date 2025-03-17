@@ -1,4 +1,4 @@
-Activity name,Exchange name,Exchange type,Exchange amount,Exchange uncertainty type,u,Exchange negative
+Activity name,Exchange name,Exchange type,Exchange amount,Exchange uncertainty type,GSD,Exchange negative
 column_1,EU28-Agriculture-Forestry-Fishing,technosphere,0,0,,
 column_1,EU28-Energy,technosphere,,0,,
 column_1,"EU28-Natural gas and services related to natural gas extraction, excluding surveying",technosphere,,0,,
@@ -37,4 +37,4 @@ column_1,EU28-Intert/metal waste for treatment: incineration,technosphere,1.6519
 column_1,EU28-Sewage sludge for treatment: biogasification and land application,technosphere,-0.00001,1,0,TRUE
 column_1,EU28-Other waste for treatment: waste water treatment,technosphere,5.67E-07,2,1.56,FALSE
 column_1,EU28-Inert/metal/hazardous waste for treatment: landfill,technosphere,,0,,
-column_1,column_1,production,1.2,2,1.111,FALSE
+column_1,column_1,production,1,2,1.111,FALSE
