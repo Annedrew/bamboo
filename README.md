@@ -4,7 +4,7 @@
 ## Dependencies
 The dependencies needed for this library, is listed in `requirements.txt`, to install:
 ```
-python install -r requirements.txt
+pip install -r requirements.txt
 ```
 
 
