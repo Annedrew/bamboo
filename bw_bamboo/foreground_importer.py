@@ -26,7 +26,10 @@ class ForegroundImporter:
                 row_num = fg_activities.index(row["Exchange name"])
                 fgfg[row_num][column_num] = row["Exchange amount"]
             elif row["Exchange type"] == "technosphere": # bgfg
-                row_num = bg_activities.index(row["Exchange name"])
+                try:
+                    row_num = bg_activities.index(row["Exchange name"])
+                except ValueError:
+                    row_num = fg_activities.index(row["Exchange name"])
                 bgfg[row_num][column_num] = row["Exchange amount"]
             elif row["Exchange type"] == "biosphere": # bifg
                 row_num = emissions.index(row["Exchange name"])
