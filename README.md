@@ -43,6 +43,26 @@ Where:
 ### Dependencies
 
 - To use this library, you have to have **Brightway2.5** installed. To install Brightway, click [here](https://docs.brightway.dev/en/latest/content/installation/).
+- If you need to find the characterization factors through Brightway, then you need to have ecoinvent imported, otherwise, it is not necessary.
+  - If you have ecoinvent license:
+    ```
+    bi.import_ecoinvent_release(
+      version='<ecoinvent version>',
+      system_model='consequential',
+      username ='XXX', # use your own
+      password='XXX' # use your own
+    )
+    ```
+  - If you don't have ecoinvent license:
+    - You can import one of the biosphere data:
+      - `ecoinvent-3.10-biosphere`
+      - `ecoinvent-3.8-biosphere`
+      - `ecoinvent-3.9.1-biosphere`
+      - `forwast`
+      - `USEEIO-1.1`
+    ```
+    bi.remote.install_project('ecoinvent-3.10-biosphere', 'bamboo', overwrite_existing=True)
+    ```
 
 ### Installation
 1. Open your local terminal.  
