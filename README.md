@@ -6,7 +6,7 @@
 
 This is a Python package designed to import external input-output databases to brightway, such as EXIOBASE. In addition, it can assist you to model different types of uncertainty analysis or scenario analysis with datapackage matrix data.  
 
-This library is developed based on **Brightway2.5** and **EXIOBASE3** dataset.
+This library is developed based on **[Brightway2.5](https://docs.brightway.dev/en/latest/)** and **[EXIOBASE3](https://www.exiobase.eu/index.php/9-blog/31-now-available-exiobase2)** dataset.
 
 ## 📖 Background Knowledge 
 
@@ -33,9 +33,9 @@ Where:
   - `itemwise`: This strategy add different type/value of the uncertainty different element in the matrix. To use this stragety, your uncertainty input should be defined in the file.
 
   **NOTICE:**  
+    - Supported uncertainty type: 0, 1, 2, 3, 4 (Check [here](https://stats-arrays.readthedocs.io/en/latest/#mapping-parameter-array-columns-to-uncertainty-distributions) to select your uncertainty type.)
     - For strategy 2) and 3), only technosphere and biosphere matrices are supported.
     - `itemwise` recommends apply only to the foreground system, considering the amount of data that introduces uncertainty for both systems. The library does not specifically handle this situation.
-    - Supported uncertainty type: 0, 1, 2, 3, 4 (Check [here](https://stats-arrays.readthedocs.io/en/latest/#mapping-parameter-array-columns-to-uncertainty-distributions) to select your uncertainty type.)
 
 ## 👩‍💻 Getting Started
 ### Requirements
@@ -43,7 +43,7 @@ Where:
 
 ### Dependencies
 
-- To use this library, you have to have **Brightway2.5** installed. To install Brightway, click [here](https://docs.brightway.dev/en/latest/content/installation/).
+- To use this library, you have to have **Brightway2.5** installed. (To install Brightway, click [here](https://docs.brightway.dev/en/latest/content/installation/)).
 - If you need to find the characterization factors through Brightway, then you need to have ecoinvent imported, otherwise, it is not necessary.
   - If you have ecoinvent license:
     ```
