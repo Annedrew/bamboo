@@ -28,6 +28,13 @@ Where:
 ## ✨ Features
 - Perform LCA based on input-output databases (such as EXIOBASE), using Brightway.
   - Perform LCA with only background database, or combined with a customizable foreground.
+    - The matrix is ​​arranged like this:  
+    The foreground system is constructed from four matrices: `fgbg`, `fgfg`, `bgfg`, and `bifg`. These matrices are named to reflect their row and column positions. Specifically:
+      - `fgbg`: This is the matrix locate the foreground row first, then the background column. It indicates the amount of exchange that takes from background to foreground. Normally, there is no such exchange. So, by default this matrix is all zero.
+      - `fgfg`: This is the matrix locate the foreground row first, then the foreground column. It indicates the amount of exchange that takes from foreground to foreground.
+      - `bgfg`: This is the matrix locate the background row first, then the foreground column. It indicates the amount of exchange that takes from foreground to background.
+      - `bifg`: This is the matrix locate the biosphere emission row first, then the foreground column. It indicates the amount of exchange that takes from foreground to biosphere.
+    ![matrices figure](./assets/matrices_figure.png)
 - Uncertainty Analysis for input-output databases.
   - `uniformly`: This strategy add the same type/value of the uncertainty to a matrix, but you can add uncertainty for all matricies or only one/two of the matrices.
   - `columnwise`: This strategy add the same type/value of the uncertainty to the same column of a matrix, different column can have different type/value of uncertainty. To use this stragety, your uncertainty input should be defined in the file.
