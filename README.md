@@ -35,6 +35,7 @@ Where:
   **NOTICE:**  
     - For strategy 2) and 3), only technosphere and biosphere matrices are supported.
     - `itemwise` recommends apply only to the foreground system, considering the amount of data that introduces uncertainty for both systems. The library does not specifically handle this situation.
+    - Supported uncertainty type: 0, 1, 2, 3, 4 (Check [here](https://stats-arrays.readthedocs.io/en/latest/#mapping-parameter-array-columns-to-uncertainty-distributions) to select your uncertainty type.)
 
 ## 👩‍💻 Getting Started
 ### Requirements
