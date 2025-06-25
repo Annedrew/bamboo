@@ -6,7 +6,7 @@
 
 This is a Python package designed to import external input-output databases to brightway, such as EXIOBASE. In addition, it can assist you to model different types of uncertainty analysis or scenario analysis with datapackage matrix data.  
 
-This library is developed based on **Brightway2.5** and **EXIOBASE3** dataset.
+This library is developed based on **[Brightway2.5](https://docs.brightway.dev/en/latest/)** and **[EXIOBASE3](https://www.exiobase.eu/index.php/9-blog/31-now-available-exiobase2)** dataset.
 
 ## 📖 Background Knowledge 
 
@@ -26,13 +26,14 @@ Where:
 - $f$: Functional unit
 
 ## ✨ Features
-- Run LCA in batches to significantly reduce the runtime.
+- Run LCA with input-ouput databases, such as EXIOBASE, using Brightway.
 - Uncertainty Analysis for input-output databases.
   - `uniformly`: This strategy add the same type/value of the uncertainty to a matrix, but you can add uncertainty for all matricies or only one/two of the matrices.
   - `columnwise`: This strategy add the same type/value of the uncertainty to the same column of a matrix, different column can have different type/value of uncertainty. To use this stragety, your uncertainty input should be defined in the file.
   - `itemwise`: This strategy add different type/value of the uncertainty different element in the matrix. To use this stragety, your uncertainty input should be defined in the file.
 
   **NOTICE:**  
+    - Supported uncertainty type: 0, 1, 2, 3, 4 (Check [here](https://stats-arrays.readthedocs.io/en/latest/#mapping-parameter-array-columns-to-uncertainty-distributions) to select your uncertainty type.)
     - For strategy 2) and 3), only technosphere and biosphere matrices are supported.
     - `itemwise` recommends apply only to the foreground system, considering the amount of data that introduces uncertainty for both systems. The library does not specifically handle this situation.
 
@@ -42,7 +43,27 @@ Where:
 
 ### Dependencies
 
-- To use this library, you have to have **Brightway2.5** installed. To install Brightway, click [here](https://docs.brightway.dev/en/latest/content/installation/).
+- To use this library, you have to have **Brightway2.5** installed. (To install Brightway, click [here](https://docs.brightway.dev/en/latest/content/installation/)).
+- If you need to find the characterization factors through Brightway, then you need to have ecoinvent imported, otherwise, it is not necessary.
+  - If you have ecoinvent license:
+    ```
+    bi.import_ecoinvent_release(
+      version='<ecoinvent version>',
+      system_model='consequential',
+      username ='XXX', # use your own
+      password='XXX' # use your own
+    )
+    ```
+  - If you don't have ecoinvent license:
+    - You can import one of the biosphere data:
+      - `ecoinvent-3.10-biosphere`
+      - `ecoinvent-3.8-biosphere`
+      - `ecoinvent-3.9.1-biosphere`
+      - `forwast`
+      - `USEEIO-1.1`
+    ```
+    bi.remote.install_project('ecoinvent-3.10-biosphere', 'bamboo', overwrite_existing=True)
+    ```
 
 ### Installation
 1. Open your local terminal.  
