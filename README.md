@@ -33,7 +33,7 @@ Where:
       - `fgbg`: This is the matrix locate the foreground row first, then the background column. It indicates the amount of exchange that takes from background to foreground. Normally, there is no such exchange. So, by default this matrix is all zero.
       - `fgfg`: This is the matrix locate the foreground row first, then the foreground column. It indicates the amount of exchange that takes from foreground to foreground.
       - `bgfg`: This is the matrix locate the background row first, then the foreground column. It indicates the amount of exchange that takes from foreground to background.
-      - `bifg`: This is the matrix locate the biosphere emission row first, then the foreground column. It indicates the amount of exchange that takes from foreground to biosphere.
+      - `bifg`: This is the matrix locate the biosphere emission row first, then the foreground column. It indicates the amount of exchange that takes from foreground to biosphere.  
     ![matrices figure](./assets/matrices_figure.png)
 - Uncertainty Analysis for input-output databases.
   - `uniformly`: This strategy add the same type/value of the uncertainty to a matrix, but you can add uncertainty for all matricies or only one/two of the matrices.
