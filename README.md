@@ -26,7 +26,7 @@ Where:
 - $f$: Functional unit
 
 ## ✨ Features
-- Run LCA in batches to significantly reduce the runtime.
+- Run LCA with input-ouput databases, such as EXIOBASE, using Brightway.
 - Uncertainty Analysis for input-output databases.
   - `uniformly`: This strategy add the same type/value of the uncertainty to a matrix, but you can add uncertainty for all matricies or only one/two of the matrices.
   - `columnwise`: This strategy add the same type/value of the uncertainty to the same column of a matrix, different column can have different type/value of uncertainty. To use this stragety, your uncertainty input should be defined in the file.
