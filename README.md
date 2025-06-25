@@ -11,7 +11,7 @@ This library is developed based on **[Brightway2.5](https://docs.brightway.dev/e
 ## 📖 Background Knowledge 
 
 ### EXIOBASE
-[EXIOBASE](https://www.exiobase.eu/) is a global, detailed Multi-Regional Environmentally Extended Supply-Use Table (MR-SUT) and Input-Output Table (MR-IOT). It can be used to do Life Cycle Assessment(LCA) analysis. The inventory data and emission data is stored in `txt` file. 
+[EXIOBASE](https://www.exiobase.eu/) is a global, detailed Multi-Regional Environmentally Extended Supply-Use Table (MR-SUT) and Input-Output Table (MR-IOT). It can be used to do Life Cycle Assessment(LCA) analysis. The inventory data and emission data is stored in `txt` files. 
 
 [EXIOBASE3](https://zenodo.org/records/3583071) is one of the most extensive EE-MRIO systems available worldwide. EXIOBASE 3 builds upon the previous versions of EXIOBASE by using rectangular supply‐use tables (SUT) in a 163 industry by 200 products classification as the main building blocks.
 
@@ -24,21 +24,22 @@ Where:
 - A: Technospere matrix
 - I: Identity matrix
 - $f$: Functional unit
+- g: Inventory
 
 ## ✨ Features
 - Perform LCA based on input-output databases (such as EXIOBASE), using Brightway.
-  - Perform LCA with only background database, or combined with a customizable foreground.
-    - The matrix is ​​arranged like this:  
+  - Perform LCA using only EXIOBASE as background system, or using EXIOBASE combined with a customizable foreground system.
+    - The corresponding matrices are arranged like this:  
     The foreground system is constructed from four matrices: `fgbg`, `fgfg`, `bgfg`, and `bifg`. These matrices are named to reflect their row and column positions. Specifically:
-      - `fgbg`: This is the matrix locate the foreground row first, then the background column. It indicates the amount of exchange that takes from background to foreground. Normally, there is no such exchange. So, by default this matrix is all zero.
-      - `fgfg`: This is the matrix locate the foreground row first, then the foreground column. It indicates the amount of exchange that takes from foreground to foreground.
-      - `bgfg`: This is the matrix locate the background row first, then the foreground column. It indicates the amount of exchange that takes from foreground to background.
-      - `bifg`: This is the matrix locate the biosphere emission row first, then the foreground column. It indicates the amount of exchange that takes from foreground to biosphere.  
+      - `fgfg`: This is the square matrix representing the foreground system. It includes exchanges from foreground (fg) to foreground (fg).
+      - `fgbg`: This is the matrix representing all exchanges from the foreground (fg) system to the background (bg) system. Normally, this matrix is empty because the background system (database) is pre-defined and thus does not have inputs form the user-defined foreground system. So, by default this matrix is all zeros.
+      - `bgfg`: This is the matrix representing all exchanges from the background (bg) to the foreground (fg) system. For example, this could be the input of “EU28-Energy” to an activity in the foreground system.
+      - `bifg`: This is the matrix representing all the biosphere (bi) exchanges in the foreground (fg) system.  
     ![matrices figure](./assets/matrices_figure.png)
 - Uncertainty Analysis for input-output databases.
-  - `uniformly`: This strategy add the same type/value of the uncertainty to a matrix, but you can add uncertainty for all matricies or only one/two of the matrices.
-  - `columnwise`: This strategy add the same type/value of the uncertainty to the same column of a matrix, different column can have different type/value of uncertainty. To use this stragety, your uncertainty input should be defined in the file.
-  - `itemwise`: This strategy add different type/value of the uncertainty different element in the matrix. To use this stragety, your uncertainty input should be defined in the file.
+  - `uniformly`: This strategy assumes that all exchanges have the same uncertainty(that is type of distribution, location, and scale). It adds this uncertainty information to all exchanges to both biosphere and technosphere matrices or the user can specify to add uncertainty only to one of them.
+  - `columnwise`: This strategy adds the same uncertainty information to each exchange of a specific column of a matrix, but different uncertainty information to each column of a matrix. Different columns can thus have different uncertainty(that is type of distribution, location, and scale). To use this strategy, the uncertainty information should be defined in the user input file ([foreground_system_2.csv](notebooks/data/foreground_system_2.csv)).
+  - `itemwise`: This strategy adds different uncertainty(that is type of distribution, location, and scale) to different exchanges. To use this strategy, the uncertainty information should be defined in the user input file ([foreground_system_2.csv](notebooks/data/foreground_system_2.csv)).
 
   **NOTICE:**  
     - Supported uncertainty type: 0, 1, 2, 3, 4 (Check [here](https://stats-arrays.readthedocs.io/en/latest/#mapping-parameter-array-columns-to-uncertainty-distributions) to select your uncertainty type.)
@@ -53,25 +54,17 @@ Where:
 
 - To use this library, you have to have **Brightway2.5** installed. (To install Brightway, click [here](https://docs.brightway.dev/en/latest/content/installation/)).
 - If you need to find the characterization factors through Brightway, then you need to have ecoinvent imported, otherwise, it is not necessary.
-  - If you have ecoinvent license:
-    ```
-    bi.import_ecoinvent_release(
-      version='<ecoinvent version>',
-      system_model='consequential',
-      username ='XXX', # use your own
-      password='XXX' # use your own
-    )
-    ```
+  - If you have ecoinvent license, click [here](https://docs.brightway.dev/en/latest/content/cheatsheet/importing.html) to see how to import.
   - If you don't have ecoinvent license:
-    - You can import one of the biosphere data:
+    ```
+    bi.remote.install_project('<project_tag>', '<my_desired_project_name>')
+    ```
+    - Where `<project_tag>` is one of:
       - `ecoinvent-3.10-biosphere`
       - `ecoinvent-3.8-biosphere`
       - `ecoinvent-3.9.1-biosphere`
       - `forwast`
       - `USEEIO-1.1`
-    ```
-    bi.remote.install_project('ecoinvent-3.10-biosphere', 'bamboo', overwrite_existing=True)
-    ```
 
 ### Installation
 1. Open your local terminal.  
