@@ -3,6 +3,14 @@ import pandas as pd
 import numpy as np
 
 
+def detect_foreground(acts, bg_activities):
+    """
+    Detect foreground activties from user's input.
+    """
+    fg_activities = list(set(acts) - set(bg_activities))
+
+    return fg_activities
+
 def get_country_sector(activity):
     """
     Design for EXIOBASE: Separate the country and sector.
@@ -14,7 +22,19 @@ def get_country_sector(activity):
 
     return country, sector
 
-def get_fg_activities(fg_file_path: str, delimiter: str) -> list:
+def get_fg_dataframe(user_dataframe: pd.DataFrame, fg_activities: list):
+    """
+    Extract the foreground rows from user's input file.
+    
+    Parameters:
+        * user_dataframe: The dataframe of user's input file.
+        * fg_activities: All foreground activities.
+    """
+    fg_dataframe = user_dataframe[user_dataframe["Activity name"].isin(fg_activities)]
+
+    return fg_dataframe
+
+def get_fg_activities(fg_file_path: str, delimiter: str, bg_activities: list) -> list:
     """
     Get all activities of foreground system.
 
@@ -23,7 +43,8 @@ def get_fg_activities(fg_file_path: str, delimiter: str) -> list:
         * delimiter: The separator of the file.
     """
     df = pd.read_csv(fg_file_path, decimal=delimiter)
-    fg_activities = df["Activity name"].unique().tolist()
+    acts = df["Activity name"].unique().tolist()
+    fg_activities = detect_foreground(acts, bg_activities)
 
     return fg_activities
 

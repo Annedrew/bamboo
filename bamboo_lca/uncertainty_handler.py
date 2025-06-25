@@ -1,7 +1,6 @@
 import bw_processing as bwp
 import pandas as pd
 import numpy as np
-from .utils import *
 from .metadata_manager import *
 
 
