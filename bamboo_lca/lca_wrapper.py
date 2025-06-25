@@ -5,12 +5,12 @@ import os
 
 
 class LCAWrapper:
-    def perform_static(self, index, datapackage, directory, k, t, myact):
+    def perform_static(self, demand, datapackage, directory, k, t, myact):
         """
         Perform static simulation and save the lca score.
 
         Parameters:
-            * index: The index of the functional unit.
+            * demand: The dictionary of the functional unit, for example: {<index>: <amount>}.
             * datapackage: The datapackage used for simulation.
             * directory: The directory to save output file.
             * k: The case identifier.
@@ -18,7 +18,7 @@ class LCAWrapper:
             * myact: 
         """
         lca = bc.LCA(
-            demand={index: 1}, # TODO: user defined
+            demand=demand,
             data_objs=[datapackage],
         )
         lca.lci()
@@ -29,7 +29,7 @@ class LCAWrapper:
         filename = os.path.join(directory, f"CASE_{k}_{t}_MC_simulations_{myact}.csv")
 
         with open(filename, "w") as file:
-            file.write("kg CO2eq\n") # TODO: Write the header
+            file.write("kg CO2eq\n") # TODO: Write the header -> Not use this function, so it's ok for now.
             file.write(f"{lca.score}")
             print(f"Static LCA result saved to {filename}.")
 

@@ -148,7 +148,7 @@ class UncertaintyHandler:
 
         return uncertainty_array
 
-    # TODO: Ignore the flip first, modify it after generate all uncertainty tuples.
+    # TODO: Ignore the flip first, modify it after generate all uncertainty tuples. -> Not use this function, so it's ok for now.
     def add_multifunctionality_flip(self, extend_data: pd.DataFrame, act_column: str, flip_column: str, dp_flip: np.ndarray, dp_indices: np.ndarray, activities: list) -> np.ndarray:
         """
         Add flip sign for multifunctionality foreground system. (It's used when user's input is all positive values and only the last column shows to flip or not.)

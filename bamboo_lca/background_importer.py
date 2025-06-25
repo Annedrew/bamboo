@@ -167,7 +167,7 @@ class BackgroundImporter:
             
         return None
     
-    # TODO: if it's functional unit, then try to find it and set it to 1
+    # TODO: if it's functional unit, then try to find it and set it to 1 -> Not use this function, it's ok for now.
     def find_functional_unit(self, emission_code, missing_codes, cf_dict, codes):
         cf_matrix = []
         if missing_codes: # try to find co2
