@@ -51,7 +51,7 @@ class UncertaintyHandler:
         if self.metadata is None:
             print("Please write your uncertainty information into metadata first.")
         
-        if len(self.metadata) < row:  # If biosphere, indices need to be subtracted from technosphere indices.
+        if len(self.metadata) <= row:  # If biosphere, indices need to be subtracted from technosphere indices.
             row = row - len(self.metadata) + 1
 
         if strategy == "itemwise":
@@ -78,7 +78,7 @@ class UncertaintyHandler:
         if self.metadata is None:
             print("Please write your uncertainty information into metadata first.")
         
-        if len(self.metadata) < row:  # If biosphere, indices need to be subtracted from technosphere indices.
+        if len(self.metadata) <= row:  # If biosphere, indices need to be subtracted from technosphere indices.
             row = row - len(self.metadata) + 1
 
         if strategy == "itemwise":
@@ -119,6 +119,7 @@ class UncertaintyHandler:
                     strategy = bg_strategy
             else:
                 strategy = bg_strategy
+            
             uncertainty_array.append(self.generate_uncertainty_tuple(data, uncertainty_type, self.get_uncertainty_value(strategy, act_index, row), self.get_uncertainty_negative(strategy, act_index, row)))
 
         return np.array(uncertainty_array, dtype=bwp.UNCERTAINTY_DTYPE)
