@@ -71,7 +71,7 @@ class UncertaintyHandler:
         Get uncertainty negative (TRUE or FALSE) by strategy from metadata.
 
         Parameters:
-            * strategy: The strategy of adding uncertainty, "itemwise" or "columnwise".
+            * strategy: The strategy of adding uncertainty, "itemwise" or "columnwise" (If strategy is "Uniform", don't need to call this function).
             * act_index: The index of the activity.
             * row: The row number of the corresponding activity.
         """
@@ -124,29 +124,29 @@ class UncertaintyHandler:
 
         return np.array(uncertainty_array, dtype=bwp.UNCERTAINTY_DTYPE)
     
-    def add_uniform_uncertainty(self, type, gsd, bw_data, bw_flip):
+    def add_uniform_uncertainty(self, type, gsd, uncertainty_negative, bw_data, bw_flip=None):
         """
         Generate the uncertainty tuple for one value.
 
         Parameters:
-            * type: The type of uncertainty, such as "Uniform".
+            * type: The type of uncertainty, such as 0, 1, 2, 3, 4.
             * gsd: Geometric Standard Deviation, used to calculate sigma of lognormal distribution.
             * bw_data: All values for foreground system or background system.
             * bw_flip: The flip array of technosphere.
         """
-        uncertainty_array = np.zeros(len(bw_data), dtype=bwp.UNCERTAINTY_DTYPE)
+        uncertainty_array = []
 
         if bw_flip is not None:
             for i in range(len(bw_data)):
                 if bw_flip[i] == True:
-                    uncertainty_array[i] = self.generate_uncertainty_tuple(bw_data[i], type, gsd)
+                    uncertainty_array.append(self.generate_uncertainty_tuple(bw_data[i], type, gsd, uncertainty_negative))
                 else:
-                    uncertainty_array[i] = (0, bw_data[i], np.NaN, np.NaN, np.NaN, np.NaN, False)
+                    uncertainty_array.append((0, bw_data[i], np.NaN, np.NaN, np.NaN, np.NaN, False))
         else:
             for i in range(len(bw_data)):
-                uncertainty_array[i] = self.generate_uncertainty_tuple(bw_data[i], type, gsd)
+                uncertainty_array.append(self.generate_uncertainty_tuple(bw_data[i], type, gsd, uncertainty_negative))
 
-        return uncertainty_array
+        return np.array(uncertainty_array, dtype=bwp.UNCERTAINTY_DTYPE)
 
     # TODO: Ignore the flip first, modify it after generate all uncertainty tuples. -> Not use this function, so it's ok for now.
     def add_multifunctionality_flip(self, extend_data: pd.DataFrame, act_column: str, flip_column: str, dp_flip: np.ndarray, dp_indices: np.ndarray, activities: list) -> np.ndarray:
