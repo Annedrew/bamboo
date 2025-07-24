@@ -7,7 +7,7 @@ class UncertaintyImporter:
     The metadata updated in this class will be stored in metadata_manager
     """
     def __init__(self, file_path, delimiter):
-        self.metadata = metadata_manager.get_metadata()
+        self.metadata = metadata_manager._get_metadata()
         self.file_path = file_path
         self.delimiter = delimiter
         self.df = None
@@ -21,22 +21,22 @@ class UncertaintyImporter:
         Parameters:
             * strategy: "itemwise" or "columnwise"
         """
-        self.update_metadata_activities(activities)
+        self._update_metadata_activities(activities)
 
         self._load_df()
         column_names = self.df["Activity name"].unique()  # the column names of foreground system
         for col_name in column_names:
-            self.update_metadata_column_uncertainty(col_name, self.df, activities, strategy)
+            self._update_metadata_column_uncertainty(col_name, self.df, activities, strategy)
 
-    def update_metadata_activities(self, activities):
+    def _update_metadata_activities(self, activities):
         """
         Import all foreground activity names, if foreground system has 2 columns, it will have 2 keys.
         """
         if not any("Activity name" in value for value in self.metadata.values()):
             for i in range(len(activities)):
-                metadata_manager.update_metadata(i, {"Activity name": activities[i]})
+                metadata_manager._update_metadata(i, {"Activity name": activities[i]})
 
-    def update_metadata_column_uncertainty(self, act_name, df, activities, strategy):
+    def _update_metadata_column_uncertainty(self, act_name, df, activities, strategy):
         """
         Update metadata by "Activity name"
         """

@@ -38,10 +38,10 @@ class MetadataManager:
         if not hasattr(self, "metadata"):
             self.metadata = {}
 
-    def update_metadata(self, key, value):
+    def _update_metadata(self, key, value):
         self.metadata[key] = value
 
-    def get_metadata(self):
+    def _get_metadata(self):
         return self.metadata
     
 metadata_manager = MetadataManager()

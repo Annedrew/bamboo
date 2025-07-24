@@ -6,15 +6,15 @@ from .metadata_manager import *
 
 class UncertaintyHandler:
     def __init__(self):
-        self.metadata = metadata_manager.get_metadata()
+        self.metadata = metadata_manager._get_metadata()
 
-    def calc_specific_uncertainty(self, data, uncertainty):
+    def _calc_specific_uncertainty(self, data, uncertainty):
         loc = np.log(data)
         scale = np.log(uncertainty)
 
         return loc, scale
 
-    def generate_uncertainty_tuple(self, data, type, gsd, uncertainty_negative):
+    def _generate_uncertainty_tuple(self, data, type, gsd, uncertainty_negative):
         """
         Generate the uncertainty tuple for one value.
 
@@ -39,7 +39,7 @@ class UncertaintyHandler:
 
         return uncertainty_tuple
     
-    def get_uncertainty_value(self, strategy, act_index, row):
+    def _get_uncertainty_value(self, strategy, act_index, row):
         """
         Get uncertainty values by strategy from metadata.
 
@@ -66,7 +66,7 @@ class UncertaintyHandler:
 
         return uncertainty_value
     
-    def get_uncertainty_negative(self, strategy, act_index, row):
+    def _get_uncertainty_negative(self, strategy, act_index, row):
         """
         Get uncertainty negative (TRUE or FALSE) by strategy from metadata.
 
@@ -92,7 +92,7 @@ class UncertaintyHandler:
 
         return uncertainty_negative
 
-    def add_nonuniform_uncertainty(self, bw_data, bw_indices, bw_flip, bg_strategy, fg_num=None, fg_strategy=None):
+    def add_nonuniform_uncertainty(self, bw_data, bw_indices, bg_strategy, fg_num=None, fg_strategy=None):
         """
         Prepare uncertainty array for datapackage. By default, foreground system is not considered, but you can set youself.
 
@@ -120,7 +120,7 @@ class UncertaintyHandler:
             else:
                 strategy = bg_strategy
             
-            uncertainty_array.append(self.generate_uncertainty_tuple(data, uncertainty_type, self.get_uncertainty_value(strategy, act_index, row), self.get_uncertainty_negative(strategy, act_index, row)))
+            uncertainty_array.append(self._generate_uncertainty_tuple(data, uncertainty_type, self._get_uncertainty_value(strategy, act_index, row), self._get_uncertainty_negative(strategy, act_index, row)))
 
         return np.array(uncertainty_array, dtype=bwp.UNCERTAINTY_DTYPE)
     
@@ -139,15 +139,16 @@ class UncertaintyHandler:
         if bw_flip is not None:
             for i in range(len(bw_data)):
                 if bw_flip[i] == True:
-                    uncertainty_array.append(self.generate_uncertainty_tuple(bw_data[i], type, gsd, uncertainty_negative))
+                    uncertainty_array.append(self._generate_uncertainty_tuple(bw_data[i], type, gsd, uncertainty_negative))
                 else:
                     uncertainty_array.append((0, bw_data[i], np.NaN, np.NaN, np.NaN, np.NaN, False))
         else:
             for i in range(len(bw_data)):
-                uncertainty_array.append(self.generate_uncertainty_tuple(bw_data[i], type, gsd, uncertainty_negative))
+                uncertainty_array.append(self._generate_uncertainty_tuple(bw_data[i], type, gsd, uncertainty_negative))
 
         return np.array(uncertainty_array, dtype=bwp.UNCERTAINTY_DTYPE)
 
+# TODO: 这是啥意思？
     # TODO: Ignore the flip first, modify it after generate all uncertainty tuples. -> Not use this function, so it's ok for now.
     def add_multifunctionality_flip(self, extend_data: pd.DataFrame, act_column: str, flip_column: str, dp_flip: np.ndarray, dp_indices: np.ndarray, activities: list) -> np.ndarray:
         """

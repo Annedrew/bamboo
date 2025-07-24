@@ -38,7 +38,7 @@ class BackgroundImporter:
 
         return bio_matrix
 
-    def get_from_cfs(self, emission_df):
+    def _get_from_cfs(self, emission_df):
         """
         Get the characterization factors (type: list) from characterization factor file in dataframe format.
 
@@ -68,7 +68,7 @@ class BackgroundImporter:
 
         return None
 
-    def get_from_code(self, emission_df, method, ecoinvent_name):
+    def _get_from_code(self, emission_df, method, ecoinvent_name):
         """
         Get the characterization factor values (type: list) through brightway by code.
 
@@ -149,14 +149,14 @@ class BackgroundImporter:
         emission_df = file_preprocessing(emission_file, ",", "exiobase name", emission_list)  # sorting the column order align with the desired order.
         
         if source == "cf":
-            cf_values = self.get_from_cfs(emission_df)
+            cf_values = self._get_from_cfs(emission_df)
             if cf_values:
                 cf_matrix = np.diagflat(cf_values)
                 return cf_matrix
             else:
                 print("Failed to build matrix, there are CFs not found.")
         elif source == "code":
-            cf_values = self.get_from_code(emission_df, method, biodb_name)
+            cf_values = self._get_from_code(emission_df, method, biodb_name)
             if cf_values:
                 cf_matrix = np.diagflat(cf_values)
                 return cf_matrix
@@ -168,7 +168,7 @@ class BackgroundImporter:
         return None
     
     # TODO: if it's functional unit, then try to find it and set it to 1 -> Not use this function, it's ok for now.
-    def find_functional_unit(self, emission_code, missing_codes, cf_dict, codes):
+    def _find_functional_unit(self, emission_code, missing_codes, cf_dict, codes):
         cf_matrix = []
         if missing_codes: # try to find co2
             miss_dict = emission_code[["ecoinvent name", "brightway code"]].set_index("brightway code")["ecoinvent name"].to_dict()
