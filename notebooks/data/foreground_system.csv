@@ -1,0 +1,120 @@
+Activity name,Exchange name,Exchange type,Exchange amount
+column_1,EU28-Agriculture-Forestry-Fishing,technosphere,0
+column_1,EU28-Energy,technosphere,
+column_1,"EU28-Natural gas and services related to natural gas extraction, excluding surveying",technosphere,
+column_1,EU28-Industry,technosphere,0.000001215
+column_1,EU28-Motor Gasoline,technosphere,-1.55E-05
+column_1,EU28-Gas/Diesel Oil,technosphere,-1.97E-05
+column_1,EU28-Refinery Feedstocks,technosphere,
+column_1,EU28-Lubricants,technosphere,1.53E-10
+column_1,EU28-P- and other fertiliser,technosphere,-6.46E-05
+column_1,EU28-Chemicals nec,technosphere,2.61E-06
+column_1,EU28-Biogasoline,technosphere,
+column_1,EU28-Biodiesels,technosphere,5.96E-06
+column_1,"EU28-Cement, lime and plaster",technosphere,
+column_1,EU28-Basic iron and steel and of ferro-alloys and first products thereof,technosphere,
+column_1,EU28-Aluminium and aluminium products,technosphere,0.000014985
+column_1,EU28-Copper products,technosphere,
+column_1,EU28-Electricity by coal,technosphere,-5.84E-07
+column_1,EU28-Electricity by gas,technosphere,-3.91E-07
+column_1,EU28-Electricity by nuclear,technosphere,-2.62E-07
+column_1,EU28-Electricity by hydro,technosphere,-1.03E-07
+column_1,EU28-Electricity by wind,technosphere,-5.37E-07
+column_1,EU28-Electricity by petroleum and other oil derivatives,technosphere,-1.92E-08
+column_1,EU28-Electricity by biomass and waste,technosphere,-2.34E-07
+column_1,EU28-Electricity by solar photovoltaic,technosphere,-2.01E-07
+column_1,EU28-Electricity by solar thermal,technosphere,0
+column_1,"EU28-Electricity by tide, wave, ocean",technosphere,-6.78E-09
+column_1,EU28-Electricity by Geothermal,technosphere,-9.35E-10
+column_1,EU28-Electricity nec,technosphere,
+column_1,EU28-Steam and hot water supply services,technosphere,7.55E-07
+column_1,"EU28-Collected and purified water, distribution services of water (41)",technosphere,1.80E-07
+column_1,EU28-Services,technosphere,
+column_1,EU28-Railway transportation services,technosphere,
+column_1,EU28-Other land transportation services,technosphere,
+column_1,EU28-Waste management,technosphere,0.000002211
+column_1,EU28-Intert/metal waste for treatment: incineration,technosphere,1.65E-05
+column_1,EU28-Sewage sludge for treatment: biogasification and land application,technosphere,-0.00001
+column_1,EU28-Other waste for treatment: waste water treatment,technosphere,5.67E-07
+column_1,EU28-Inert/metal/hazardous waste for treatment: landfill,technosphere,
+column_1,column_1,production,1
+column_2,EU28-Agriculture-Forestry-Fishing,technosphere,0
+column_2,EU28-Energy,technosphere,
+column_2,"EU28-Natural gas and services related to natural gas extraction, excluding surveying",technosphere,
+column_2,EU28-Industry,technosphere,0.000001215
+column_2,EU28-Motor Gasoline,technosphere,-1.55E-05
+column_2,EU28-Gas/Diesel Oil,technosphere,-1.97E-05
+column_2,EU28-Refinery Feedstocks,technosphere,
+column_2,EU28-Lubricants,technosphere,1.53E-10
+column_2,EU28-P- and other fertiliser,technosphere,-6.46E-05
+column_2,EU28-Chemicals nec,technosphere,2.61E-06
+column_2,EU28-Biogasoline,technosphere,
+column_2,EU28-Biodiesels,technosphere,5.96E-06
+column_2,"EU28-Cement, lime and plaster",technosphere,
+column_2,EU28-Basic iron and steel and of ferro-alloys and first products thereof,technosphere,
+column_2,EU28-Aluminium and aluminium products,technosphere,0.000014985
+column_2,EU28-Copper products,technosphere,
+column_2,EU28-Electricity by coal,technosphere,-5.84E-07
+column_2,EU28-Electricity by gas,technosphere,-3.91E-07
+column_2,EU28-Electricity by nuclear,technosphere,-2.62E-07
+column_2,EU28-Electricity by hydro,technosphere,-1.03E-07
+column_2,EU28-Electricity by wind,technosphere,-5.37E-07
+column_2,EU28-Electricity by petroleum and other oil derivatives,technosphere,-1.92E-08
+column_2,EU28-Electricity by biomass and waste,technosphere,-2.34E-07
+column_2,EU28-Electricity by solar photovoltaic,technosphere,-2.01E-07
+column_2,EU28-Electricity by solar thermal,technosphere,0
+column_2,"EU28-Electricity by tide, wave, ocean",technosphere,-6.78E-09
+column_2,EU28-Electricity by Geothermal,technosphere,-9.35E-10
+column_2,EU28-Electricity nec,technosphere,
+column_2,EU28-Steam and hot water supply services,technosphere,7.55E-07
+column_2,"EU28-Collected and purified water, distribution services of water (41)",technosphere,1.80E-07
+column_2,EU28-Services,technosphere,
+column_2,EU28-Railway transportation services,technosphere,
+column_2,EU28-Other land transportation services,technosphere,
+column_2,EU28-Waste management,technosphere,0.000002211
+column_2,EU28-Intert/metal waste for treatment: incineration,technosphere,1.65E-05
+column_2,EU28-Sewage sludge for treatment: biogasification and land application,technosphere,-0.00001
+column_2,EU28-Other waste for treatment: waste water treatment,technosphere,5.67E-07
+column_2,EU28-Inert/metal/hazardous waste for treatment: landfill,technosphere,
+column_2,column_2,production,1
+column_3,column_2,technosphere,-1.50E-01
+column_3,column_1,technosphere,-3.00E-03
+column_3,column_3,production,1
+column_3,EU28-Agriculture-Forestry-Fishing,technosphere,0
+column_3,EU28-Energy,technosphere,
+column_3,"EU28-Natural gas and services related to natural gas extraction, excluding surveying",technosphere,
+column_3,EU28-Industry,technosphere,-1.22E-07
+column_3,EU28-Motor Gasoline,technosphere,-3.10E-06
+column_3,EU28-Gas/Diesel Oil,technosphere,-5.91E-06
+column_3,EU28-Refinery Feedstocks,technosphere,0
+column_3,EU28-Lubricants,technosphere,7.65E-11
+column_3,EU28-P- and other fertiliser,technosphere,-3.88E-05
+column_3,EU28-Chemicals nec,technosphere,2.61E-07
+column_3,EU28-Biogasoline,technosphere,0
+column_3,EU28-Biodiesels,technosphere,-5.37E-06
+column_3,"EU28-Cement, lime and plaster",technosphere,0
+column_3,EU28-Basic iron and steel and of ferro-alloys and first products thereof,technosphere,0
+column_3,EU28-Aluminium and aluminium products,technosphere,-0.000017982
+column_3,EU28-Copper products,technosphere,0
+column_3,EU28-Electricity by coal,technosphere,-8.18E-07
+column_3,EU28-Electricity by gas,technosphere,-3.91E-07
+column_3,EU28-Electricity by nuclear,technosphere,-4.19E-07
+column_3,EU28-Electricity by hydro,technosphere,-1.75E-07
+column_3,EU28-Electricity by wind,technosphere,-2.15E-07
+column_3,EU28-Electricity by petroleum and other oil derivatives,technosphere,-3.65E-08
+column_3,EU28-Electricity by biomass and waste,technosphere,-4.68E-07
+column_3,EU28-Electricity by solar photovoltaic,technosphere,-4.22E-07
+column_3,EU28-Electricity by solar thermal,technosphere,0
+column_3,"EU28-Electricity by tide, wave, ocean",technosphere,-6.78E-10
+column_3,EU28-Electricity by Geothermal,technosphere,-2.24E-09
+column_3,EU28-Electricity nec,technosphere,0
+column_3,EU28-Steam and hot water supply services,technosphere,-7.55E-08
+column_3,"EU28-Collected and purified water, distribution services of water (41)",technosphere,3.60E-08
+column_3,EU28-Services,technosphere,0
+column_3,EU28-Railway transportation services,technosphere,0
+column_3,EU28-Other land transportation services,technosphere,0
+column_3,EU28-Waste management,technosphere,0.000002211
+column_3,EU28-Intert/metal waste for treatment: incineration,technosphere,1.65E-05
+column_3,EU28-Sewage sludge for treatment: biogasification and land application,technosphere,-0.00002
+column_3,EU28-Other waste for treatment: waste water treatment,technosphere,5.67E-07
+column_3,EU28-Inert/metal/hazardous waste for treatment: landfill,technosphere,0
