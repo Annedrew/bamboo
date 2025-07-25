@@ -37,13 +37,16 @@ Where:
       - `bifg`: This is the matrix representing all the biosphere (bi) exchanges in the foreground (fg) system.  
     ![matrices figure](./assets/matrices_figure.png)
 - Uncertainty Analysis for input-output databases.
-  - `uniformly`: This strategy assumes that all exchanges have the same uncertainty(that is type of distribution, location, and scale). It adds this uncertainty information to all exchanges to both biosphere and technosphere matrices or the user can specify to add uncertainty only to one of them.
-  - `columnwise`: This strategy adds the same uncertainty information to each exchange of a specific column of a matrix, but different uncertainty information to each column of a matrix. Different columns can thus have different uncertainty(that is type of distribution, location, and scale). To use this strategy, the uncertainty information should be defined in the user input file ([foreground_system_2.csv](notebooks/data/foreground_system_2.csv)).
-  - `itemwise`: This strategy adds different uncertainty(that is type of distribution, location, and scale) to different exchanges. To use this strategy, the uncertainty information should be defined in the user input file ([foreground_system_2.csv](notebooks/data/foreground_system_2.csv)).
+  1. **uniformly**
+      - This strategy assumes that all exchanges have the same uncertainty(that is type of distribution, location, and scale). It adds this uncertainty information to all exchanges to both biosphere and technosphere matrices or the user can specify to add uncertainty only to one of them.
+  2. **columnwise**
+      - This strategy adds the same uncertainty information to each exchange of a specific column of a matrix, but different uncertainty information to each column of a matrix. Different columns can thus have different uncertainty(that is type of distribution, location, and scale). To use this strategy, the uncertainty information should be defined in the user input file ([uncertainty_file.csv](notebooks/data/uncertainty_file.csv)).
+  3. **itemwise**
+      - This strategy adds different uncertainty(that is type of distribution, location, and scale) to different exchanges. To use this strategy, the uncertainty information should be defined in the user input file ([uncertainty_file.csv](notebooks/data/uncertainty_file.csv)).
 
   **NOTICE:**  
     - Supported uncertainty type: 0, 1, 2, 3, 4 (Check [here](https://stats-arrays.readthedocs.io/en/latest/#mapping-parameter-array-columns-to-uncertainty-distributions) to select your uncertainty type.)
-    - For strategy 2) and 3), only technosphere and biosphere matrices are supported.
+    - For strategy 2 and 3, only technosphere and biosphere matrices are supported.
     - `itemwise` recommends apply only to the foreground system, considering the amount of data that introduces uncertainty for both systems. The library does not specifically handle this situation.
 
 ## 👩‍💻 Getting Started
@@ -51,20 +54,8 @@ Where:
 - This library was developed using **Python 3.12.9**.
 
 ### Dependencies
-
-- To use this library, you have to have **Brightway2.5** installed. (To install Brightway, click [here](https://docs.brightway.dev/en/latest/content/installation/)).
-- If you need to find the characterization factors through Brightway, then you need to have ecoinvent imported, otherwise, it is not necessary.
-  - If you have ecoinvent license, click [here](https://docs.brightway.dev/en/latest/content/cheatsheet/importing.html) to see how to import.
-  - If you don't have ecoinvent license:
-    ```
-    bi.remote.install_project('<project_tag>', '<my_desired_project_name>')
-    ```
-    - Where `<project_tag>` is one of:
-      - `ecoinvent-3.10-biosphere`
-      - `ecoinvent-3.8-biosphere`
-      - `ecoinvent-3.9.1-biosphere`
-      - `forwast`
-      - `USEEIO-1.1`
+- You need to have **Brightway2.5** installed. (click [here](https://docs.brightway.dev/en/latest/content/installation/) to see how to install Brightway).
+- If you need to find the characterization factors through Brightway, then you need to have **ecoinvent** imported, otherwise, it is not necessary. (click [here](https://docs.brightway.dev/en/latest/content/cheatsheet/importing.html) to see how to import ecoinvent.)
 
 ### Installation
 1. Open your local terminal.  
@@ -77,28 +68,35 @@ Where:
 
 ### Required files
 (The examples of those file is in [data](notebooks/data) folder.)
-- **External database file**: This is the file of your background database, for example the `A.txt` and `S.txt` for EXIOBASE.
-- **Foreground system file**: This is the file for your foreground database, you need to prepare yourself. 
-  - Reference examples: 
-    - [foreground_system_1.csv](notebooks/data/foreground_system_1.csv)
-    - [foreground_system_2.csv](notebooks/data/foreground_system_2.csv). 
-  - Below shows the purpose of each column. You only need to change the data instead of the column names and order. 
-    - Activity name: includes all activity names of foreground.
-    - Exchange name: includes all exchange names of foreground.
-    - Exchange type: indicate the exchange is belongs to technosphere, biosphere or production.
-    - Exchange amount: indicate the amount of exchange required.
-    - Exchange uncertainty type: indicate the type of uncertainty you are gonna experiment. (Check uncertainty types [here](https://stats-arrays.readthedocs.io/en/latest/#mapping-parameter-array-columns-to-uncertainty-distributions)).
-    - GSD: short for "Geometric Standard Deviation", used for uncertainty distribution definition.
-    - Exchange negative: indicate uncertainty distribution is negative or positive.
+1. **External database file**
+    - This is the file of your background database. For EXIOBASE, it's the `A.txt` and `S.txt`.
+2. **Foreground system file**
+    - Reference example: [foreground_system.csv](notebooks/data/foreground_system.csv)
+    - This is the file for your foreground database, you need to prepare yourself. 
+    - Below shows the purpose of each column. You only need to change the data instead of the column names and order. 
+      - **Activity name**: includes all activity names of foreground.
+      - **Exchange name**: includes all exchange names of foreground.
+      - **Exchange type**: indicate the exchange is belongs to technosphere, biosphere or production.
+      - **Exchange amount**: indicate the amount of exchange required.
+3. **Uncertainty file**
+    - Reference example: [uncertainty_file.csv](notebooks/data/uncertainty_file.csv)
+    - It's essentially the same as foreground system file, just add uncertainty information to the same file. You can also add it in foreground system file.
+    - You only need to change the data instead of the column names and order. Except the columns required in foreground system file, you also need:
+      - **Exchange uncertainty type**: indicate the type of uncertainty you are gonna experiment. (Check uncertainty types [here](https://stats-arrays.readthedocs.io/en/latest/#mapping-parameter-array-columns-to-uncertainty-distributions)).
+      - **GSD**: short for "Geometric Standard Deviation", used for uncertainty distribution definition.
+      - **Exchange negative**: indicate uncertainty distribution is negative or positive.
 
-- **Characterization factor file**: 
-  - Below shows the purpose of some columns. 
-    - brightway code: This is the code of activity in Brightway. 
-    - CFs: The characterization factor value.
+4. **Characterization factor file**
+    - Reference example: [cf_mapping_file.csv](notebooks/data/cf_mapping_file.csv)
+    - Below shows the purpose of some columns. 
+      - **brightway code**: This is the code of activity in Brightway. 
+      - **CFs**: The characterization factor value.
 ### Notebooks
-- [LCA with imported external database](https://github.com/Annedrew/brightway-bamboo/blob/main/notebooks/lca_with_foreground.ipynb)
-- [LCA with background database](https://github.com/Annedrew/brightway-bamboo/blob/main/notebooks/lca_with_background.ipynb)
-- [Uncertainty analysis](https://github.com/Annedrew/brightway-bamboo/blob/main/notebooks/uncertainty_analysis.ipynb)
+- [1. lca_with_background.ipynb](notebooks/1.%20lca_with_background.ipynb)
+- [2. lca_with_foreground.ipynb](notebooks/2.%20lca_with_foreground.ipynb)
+- [3.1. lca_with_uniform_uncertainty.ipynb](notebooks/3.1.%20lca_with_uniform_uncertainty.ipynb)
+- [3.2. lca_with_columnwise_uncertainty.ipynb](notebooks/3.2.%20lca_with_columnwise_uncertainty.ipynb)
+- [3.2. lca_with_itemwise_uncertainty.ipynb](notebooks/3.3.%20lca_with_itemwise_uncertainty.ipynb)
 
 ### Figures
 There are some figures in the [assets](assets) folder to help you understand the structure of the library.
