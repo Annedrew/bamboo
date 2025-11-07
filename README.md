@@ -108,4 +108,4 @@ If you encounter any issues or would like to contribute to the library, please c
   - Massimo Pizzol (massimo@plan.aau.dk)
 
 ## Funding
-This contribution is funded by the ALIGNED project (Horizon Europe, grant number 101059430).
+This contribution is funded by the [ALIGNED project](https://alignedproject.eu/) (Horizon Europe, grant number 101059430).
