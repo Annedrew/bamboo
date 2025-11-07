@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bamboo_lca"
-version = "0.1.4"
+version = "0.1.5"
 description = "This is a Python package designed to import external input-output databases to brightway, such as EXIOBASE. In addition, it can assist you to model different types of uncertainty analysis or scenario analysis with datapackage matrix data."
 authors = [
   { name = "Ning An" }
