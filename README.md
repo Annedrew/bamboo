@@ -2,7 +2,8 @@
 
 [![Python](https://img.shields.io/badge/Python-3776AB.svg?logo=Python&logoColor=white)](https://www.python.org/)
 [![Jupyter](https://img.shields.io/badge/Jupyter-F37626.svg?logo=Jupyter&logoColor=white)](https://jupyter.org/)
-[![License](https://img.shields.io/github/license/Annedrew/bamboo?color=5D6D7E)](https://github.com/Annedrew/bamboo/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/License-BSD%203--Clause-5D6D7E)](https://github.com/Annedrew/bamboo/blob/main/LICENSE)
+[![DOI](https://zenodo.org/badge/897254846.svg)](https://doi.org/10.5281/zenodo.17552082)
 
 This is a Python package designed to import external input-output databases to brightway, such as EXIOBASE. In addition, it can assist you to model different types of uncertainty analysis or scenario analysis with datapackage matrix data.  
 
