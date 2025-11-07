@@ -109,3 +109,8 @@ If you encounter any issues or would like to contribute to the library, please c
 
 ## Funding
 This contribution is funded by the [ALIGNED project](https://alignedproject.eu/) (Horizon Europe, grant number 101059430).
+
+## LICENSE
+This project also uses bw2data, bw_processing, and bw2calc, which are all licensed under the BSD 3-Clause License. 
+
+You may obtain a copy of the License at: https://github.com/brightway-lca/brightway2-data/blob/main/LICENSE
