@@ -106,3 +106,6 @@ If you encounter any issues or would like to contribute to the library, please c
   - Ning An (ningan@plan.aau.dk)
   - Elisabetta Pigni (elisabetta.pigni@unibo.it)
   - Massimo Pizzol (massimo@plan.aau.dk)
+
+## Funding
+This contribution is funded by the ALIGNED project (Horizon Europe, grant number 101059430).
