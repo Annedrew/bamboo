@@ -7,7 +7,7 @@ def detect_foreground(acts, bg_activities):
     """
     Detect foreground activties from user's input.
     """
-    fg_activities = list(set(acts) - set(bg_activities))
+    fg_activities = [act for act in acts if act not in bg_activities]
 
     return fg_activities
 

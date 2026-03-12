@@ -26,16 +26,16 @@ class UncertaintyHandler:
         """
         data = abs(data)
         if type in [0, 1]:
-            uncertainty_tuple = (type, data, np.NaN, np.NaN, np.NaN, np.NaN, uncertainty_negative)
+            uncertainty_tuple = (type, data, np.nan, np.nan, np.nan, np.nan, uncertainty_negative)
         elif type == 2:  # no need to consider data == 0, because sparse matrix only save non-zero values.
             if gsd == 0:
-                uncertainty_tuple = (0, data, np.NaN, np.NaN, np.NaN, np.NaN, uncertainty_negative)
+                uncertainty_tuple = (0, data, np.nan, np.nan, np.nan, np.nan, uncertainty_negative)
             else:
-                uncertainty_tuple = (type, np.log(data), np.log(gsd), np.NaN, np.NaN, np.NaN, uncertainty_negative)
+                uncertainty_tuple = (type, np.log(data), np.log(gsd), np.nan, np.nan, np.nan, uncertainty_negative)
         elif type == 3: # normal
-            uncertainty_tuple = (type, data, np.NaN, np.NaN, np.NaN, np.NaN, uncertainty_negative)
+            uncertainty_tuple = (type, data, np.nan, np.nan, np.nan, np.nan, uncertainty_negative)
         elif type == 4: # uniform
-            uncertainty_tuple = (type, np.NaN, np.NaN, np.NaN, (data - data * gsd), (data + data * gsd), uncertainty_negative)
+            uncertainty_tuple = (type, np.nan, np.nan, np.nan, (data - data * gsd), (data + data * gsd), uncertainty_negative)
 
         return uncertainty_tuple
     
@@ -141,7 +141,7 @@ class UncertaintyHandler:
                 if bw_flip[i] == True:
                     uncertainty_array.append(self._generate_uncertainty_tuple(bw_data[i], type, gsd, uncertainty_negative))
                 else:
-                    uncertainty_array.append((0, bw_data[i], np.NaN, np.NaN, np.NaN, np.NaN, False))
+                    uncertainty_array.append((0, bw_data[i], np.nan, np.nan, np.nan, np.nan, False))
         else:
             for i in range(len(bw_data)):
                 uncertainty_array.append(self._generate_uncertainty_tuple(bw_data[i], type, gsd, uncertainty_negative))
